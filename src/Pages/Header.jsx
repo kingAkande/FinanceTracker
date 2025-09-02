@@ -1,13 +1,15 @@
-import React from 'react'
-import PageNav from '../Components/PageNav'
+import React from "react";
 
 const Header = () => {
   return (
-    <>
-   
-    <h1>  <PageNav/> Header</h1>
-    </>
-  )
-}
+    <div className="w-[320px] flex items-center justify-between">
+      <h1>💰 FinanceTracker</h1>
+      <div className="flex gap-4 items-baseline ">
+        <h1>Zain Abu</h1>
+        <button className="rounded-full p-2 bg-amber-400">ZD</button>
+      </div>
+    </div>
+  );
+};
 
-export default Header
+export default Header;

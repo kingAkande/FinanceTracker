@@ -1,15 +1,17 @@
-import React from 'react'
-import { Link, NavLink } from 'react-router-dom'
-import PageNav from '../Components/PageNav'
+import React from "react";
+import { Link, NavLink } from "react-router-dom";
+import PageNav from "../Components/PageNav";
 
 const Dashboard = () => {
   return (
     <>
+      <div>
     
-    <div> <PageNav/> Dashboard</div>
-    {/* <NavLink to='/header'> Header</NavLink> */}
+        <PageNav /> <h1>Dashboard</h1>
+      </div>
+      {/* <NavLink to='/header'> Header</NavLink> */}
     </>
-  )
-}
+  );
+};
 
-export default Dashboard
+export default Dashboard;

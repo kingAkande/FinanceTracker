@@ -1,10 +1,13 @@
-import React from 'react'
-import PageNav from '../Components/PageNav'
+import React from "react";
+import PageNav from "../Components/PageNav";
 
 const Login = () => {
   return (
-    <div> <PageNav/> Login</div>
-  )
-}
+    <div>
+      <PageNav />
+      <h1>Login</h1>
+    </div>
+  );
+};
 
-export default Login
+export default Login;

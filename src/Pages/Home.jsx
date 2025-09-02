@@ -1,13 +1,13 @@
 import React from "react";
 import PageNav from "../Components/PageNav";
 
-const Transaction = () => {
+const Home = () => {
   return (
     <div>
-        <PageNav/>
-      <h1>Transaction</h1>
+    <PageNav/>
+      <h1>Home</h1>
     </div>
   );
 };
 
-export default Transaction;
+export default Home;
