@@ -1,9 +1,12 @@
-import React from 'react'
+import React from "react";
 
 const AddTransaction = () => {
   return (
-    <div>AddTransaction</div>
-  )
-}
+    <div>
+      <Header /> 
+      <h1>AddTransaction</h1>
+    </div>
+  );
+};
 
-export default AddTransaction
+export default AddTransaction;

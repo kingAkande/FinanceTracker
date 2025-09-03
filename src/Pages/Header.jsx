@@ -2,11 +2,11 @@ import React from "react";
 
 const Header = () => {
   return (
-    <div className="w-[320px] flex text-white mx-auto items-center justify-between bg-[#4f46e5] p-6">
-      <h1 className="font-bold ">💰 FinanceTracker</h1>
-      <div className="flex gap-4 items-baseline ">
+    <div className="w-[320px] lg:w-[768px]  flex text-white mx-auto items-center justify-between bg-[#443cd6] p-6">
+      <h1 className="font-bold lg:text-2xl ">💰 FinanceTracker</h1>
+      <div className="flex gap-4 items-baseline  font-semibold">
         <h1 className="">Zain Abu</h1>
-        <button className="rounded-full p-2 bg-amber-400">ZD</button>
+        <button className="rounded-full p-2  bg-[#8882f8]">ZD</button>
       </div>
     </div>
   );

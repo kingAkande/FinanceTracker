@@ -16,7 +16,7 @@ function App() {
 
 return (
   <div >
-    <Header/>
+    {/* <Header/> */}
     {/* <h1>run oo</h1> */}
   <BrowserRouter>
     <Routes>
