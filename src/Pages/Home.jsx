@@ -1,13 +1,14 @@
 import React from "react";
 import PageNav from "../Components/PageNav";
 import Header from "./Header";
+import Dashboard from "./Dashboard";
+import Transaction from "./Transaction";
 
 const Home = () => {
   return (
-    <div className="border  mx-auto ">
-      <Header/>
-    <PageNav/>
-      <h1>Home</h1>
+    <div className="  mx-auto ">
+      <Header />
+      <PageNav />
     </div>
   );
 };

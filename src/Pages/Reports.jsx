@@ -7,9 +7,24 @@ const Reports = () => {
     <div>
       <Header/>
       <PageNav /> 
-      <h1>Reports</h1>
+        <div className="flex w-[40px] mx-auto">
+        <h1>Reports</h1>
+      </div>
     </div>
   );
 };
 
 export default Reports;
+
+
+/**
+ * 
+ * 
+ *     <>
+      <Header />
+      <PageNav />
+      <div className="flex w-[40px] mx-auto">
+        <h1>Transaction</h1>
+      </div>
+    </>
+ */

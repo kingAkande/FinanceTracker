@@ -4,8 +4,11 @@ import Header from "./Header";
 const Settings = () => {
   return (
     <div>
-      <Header />
-      <PageNav /> <h1>Settings</h1>
+      {/* <Header /> */}
+      {/* <PageNav /> */}
+      <div className="w-[40px] mx-auto">
+        <h1>Settings</h1>
+      </div>
     </div>
   );
 };

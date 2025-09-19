@@ -5,10 +5,12 @@ import Header from "./Header";
 const Budgets = () => {
   return (
     <div>
-      <Header /> 
+      {/* <Header /> */}
 
-      <PageNav />
-      <h1>Budgets</h1>
+      {/* <PageNav /> */}
+      <div  className="w-[40px] mx-auto">
+        <h1>Budgets</h1>
+      </div>
     </div>
   );
 };

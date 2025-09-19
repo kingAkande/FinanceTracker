@@ -17,7 +17,7 @@ function App() {
 return (
   <div >
     {/* <Header/> */}
-    {/* <h1>run oo</h1> */}
+    {/* <PageNav/> */}
   <BrowserRouter>
     <Routes>
       <Route path="/" element={<Home/>}/>

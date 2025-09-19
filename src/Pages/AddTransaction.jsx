@@ -3,7 +3,7 @@ import React from "react";
 const AddTransaction = () => {
   return (
     <div>
-      <Header /> 
+      {/* <Header />  */}
       <h1>AddTransaction</h1>
     </div>
   );
