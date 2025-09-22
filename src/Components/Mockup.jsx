@@ -746,10 +746,1295 @@ const Mockup = () => {
                 </div>
             </div>
         </div>
+        
 
     </div>
+    import React, { useState, useReducer, createContext, useContext, useEffect } from 'react';
+import { PlusCircle, Home, CreditCard, BarChart3, Target, Settings, Menu, X, Download, Upload, Trash2, Edit, Filter, Search } from 'lucide-react';
 
-  )
+// Types
+type TransactionType = 'income' | 'expense';
+type DeviceType = 'desktop' | 'tablet' | 'mobile';
+
+interface Transaction {
+  id: string;
+  amount: number;
+  description: string;
+  category: string;
+  type: TransactionType;
+  date: string;
+  notes?: string;
+}
+
+interface BudgetItem {
+  id: string;
+  category: string;
+  limit: number;
+  spent: number;
+  icon: string;
+}
+
+interface AppState {
+  transactions: Transaction[];
+  budgets: BudgetItem[];
+  settings: {
+    darkMode: boolean;
+    currency: string;
+    language: string;
+    notifications: {
+      budgetAlerts: boolean;
+      monthlyReports: boolean;
+      transactionReminders: boolean;
+    };
+  };
+}
+
+// Context
+const AppContext = createContext<{
+  state: AppState;
+  dispatch: React.Dispatch<any>;
+  currentPage: string;
+  setCurrentPage: (page: string) => void;
+  deviceType: DeviceType;
+  setDeviceType: (device: DeviceType) => void;
+}>({} as any);
+
+// Reducer
+const appReducer = (state: AppState, action: any): AppState => {
+  switch (action.type) {
+    case 'ADD_TRANSACTION':
+      return {
+        ...state,
+        transactions: [action.payload, ...state.transactions]
+      };
+    case 'UPDATE_TRANSACTION':
+      return {
+        ...state,
+        transactions: state.transactions.map(t => 
+          t.id === action.payload.id ? action.payload : t
+        )
+      };
+    case 'DELETE_TRANSACTION':
+      return {
+        ...state,
+        transactions: state.transactions.filter(t => t.id !== action.payload)
+      };
+    case 'UPDATE_BUDGET':
+      return {
+        ...state,
+        budgets: state.budgets.map(b => 
+          b.id === action.payload.id ? action.payload : b
+        )
+      };
+    case 'TOGGLE_SETTING':
+      return {
+        ...state,
+        settings: {
+          ...state.settings,
+          [action.payload.key]: action.payload.value
+        }
+      };
+    case 'TOGGLE_NOTIFICATION':
+      return {
+        ...state,
+        settings: {
+          ...state.settings,
+          notifications: {
+            ...state.settings.notifications,
+            [action.payload.key]: action.payload.value
+          }
+        }
+      };
+    default:
+      return state;
+  }
+};
+
+// Initial state with comprehensive sample data
+const initialState: AppState = {
+  transactions: [
+    {
+      id: '1',
+      amount: 2500,
+      description: 'Monthly Salary',
+      category: 'salary',
+      type: 'income',
+      date: '2024-01-15',
+      notes: 'Regular monthly paycheck from tech company'
+    },
+    {
+      id: '2',
+      amount: 85.50,
+      description: 'Whole Foods Market',
+      category: 'food',
+      type: 'expense',
+      date: '2024-01-14',
+      notes: 'Weekly grocery shopping'
+    },
+    {
+      id: '3',
+      amount: 15.99,
+      description: 'Netflix Subscription',
+      category: 'entertainment',
+      type: 'expense',
+      date: '2024-01-13'
+    },
+    {
+      id: '4',
+      amount: 45.00,
+      description: 'Shell Gas Station',
+      category: 'transport',
+      type: 'expense',
+      date: '2024-01-12'
+    },
+    {
+      id: '5',
+      amount: 120.00,
+      description: 'Electricity Bill',
+      category: 'bills',
+      type: 'expense',
+      date: '2024-01-10'
+    },
+    {
+      id: '6',
+      amount: 350.00,
+      description: 'Freelance Project',
+      category: 'freelance',
+      type: 'income',
+      date: '2024-01-08'
+    }
+  ],
+  budgets: [
+    { id: '1', category: 'Food & Dining', limit: 500, spent: 450, icon: '🍕' },
+    { id: '2', category: 'Transportation', limit: 300, spent: 180, icon: '🚗' },
+    { id: '3', category: 'Bills & Utilities', limit: 400, spent: 320, icon: '🏠' },
+    { id: '4', category: 'Entertainment', limit: 150, spent: 200, icon: '🎬' },
+    { id: '5', category: 'Shopping', limit: 200, spent: 95, icon: '🛍️' },
+    { id: '6', category: 'Healthcare', limit: 100, spent: 0, icon: '⚕️' }
+  ],
+  settings: {
+    darkMode: false,
+    currency: 'USD',
+    language: 'English',
+    notifications: {
+      budgetAlerts: true,
+      monthlyReports: true,
+      transactionReminders: false
+    }
+  }
+};
+
+// Category options - exactly matching the original
+const categories = {
+  income: [
+    { value: 'salary', label: '💼 Salary' },
+    { value: 'freelance', label: '💻 Freelance' },
+    { value: 'investment', label: '📈 Investment' },
+    { value: 'other', label: '📝 Other' }
+  ],
+  expense: [
+    { value: 'food', label: '🍕 Food & Dining' },
+    { value: 'transport', label: '🚗 Transportation' },
+    { value: 'shopping', label: '🛍️ Shopping' },
+    { value: 'bills', label: '🏠 Bills & Utilities' },
+    { value: 'entertainment', label: '🎬 Entertainment' },
+    { value: 'health', label: '⚕️ Healthcare' },
+    { value: 'other', label: '📝 Other' }
+  ]
+};
+
+// Custom hooks
+const useAppContext = () => {
+  const context = useContext(AppContext);
+  if (!context) {
+    throw new Error('useAppContext must be used within AppProvider');
+  }
+  return context;
+};
+
+// Main App Header with device mockup styling
+const AppHeader = () => {
+  const { currentPage, setCurrentPage, deviceType, setDeviceType } = useAppContext();
+  
+  const pages = [
+    { id: 'dashboard', label: '🏠 Dashboard', icon: '🏠' },
+    { id: 'transactions', label: '💳 Transactions', icon: '💳' },
+    { id: 'add-transaction', label: '➕ Add Transaction', icon: '➕' },
+    { id: 'reports', label: '📊 Reports', icon: '📊' },
+    { id: 'budget', label: '🎯 Budget', icon: '🎯' },
+    { id: 'settings', label: '⚙️ Settings', icon: '⚙️' }
+  ];
+
+  const devices = [
+    { id: 'desktop', label: '💻 Desktop', icon: '💻' },
+    { id: 'tablet', label: '📱 Tablet', icon: '📱' },
+    { id: 'mobile', label: '📱 Mobile', icon: '📱' }
+  ];
+
+  return (
+    <div className="bg-white border-b-2 border-gray-100">
+      {/* Main Title */}
+      <div className="text-center py-8 bg-gradient-to-r from-indigo-600 to-purple-600 text-white">
+        <h1 className="text-4xl font-bold mb-3">💰 Complete Personal Finance Tracker</h1>
+        <p className="text-lg opacity-90">See how all pages work together - Click the tabs below to explore each page</p>
+      </div>
+
+      {/* Page Switcher */}
+      <div className="py-6 bg-white">
+        <div className="flex justify-center gap-3 px-4 flex-wrap">
+          {pages.map(page => (
+            <button
+              key={page.id}
+              onClick={() => setCurrentPage(page.id)}
+              className={`px-6 py-3 rounded-full font-medium transition-all duration-300 border-2 ${
+                currentPage === page.id
+                  ? 'bg-indigo-600 text-white border-indigo-600 shadow-lg'
+                  : 'bg-white text-gray-700 border-gray-200 hover:border-indigo-600 hover:text-indigo-600'
+              }`}
+            >
+              {page.label}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {/* Device Selector */}
+      <div className="py-4 bg-gray-50">
+        <div className="flex justify-center gap-4 px-4">
+          {devices.map(device => (
+            <button
+              key={device.id}
+              onClick={() => setDeviceType(device.id as DeviceType)}
+              className={`px-5 py-2 rounded-full font-medium transition-all duration-300 border-2 ${
+                deviceType === device.id
+                  ? 'bg-purple-600 text-white border-purple-600'
+                  : 'bg-white text-gray-700 border-gray-200 hover:border-purple-600 hover:text-purple-600'
+              }`}
+            >
+              {device.label}
+            </button>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+};
+
+// Device Mockup Container
+const DeviceMockup = ({ children, className = '' }: { children: React.ReactNode; className?: string }) => {
+  const { deviceType } = useAppContext();
+  
+  const deviceClasses = {
+    desktop: 'max-w-6xl w-full',
+    tablet: 'max-w-3xl w-full',
+    mobile: 'max-w-sm w-full'
+  };
+
+  return (
+    <div className={`mx-auto bg-white rounded-3xl shadow-2xl overflow-hidden border-8 border-gray-800 transition-all duration-500 ${deviceClasses[deviceType]} ${className}`}>
+      {children}
+    </div>
+  );
+};
+
+// App Navigation Bar (inside mockup)
+const MockupHeader = () => {
+  const { currentPage, deviceType } = useAppContext();
+  
+  const navigation = [
+    { id: 'dashboard', label: deviceType === 'mobile' ? 'Home' : 'Dashboard' },
+    { id: 'transactions', label: 'Transactions' },
+    { id: 'reports', label: 'Reports' },
+    { id: 'budget', label: 'Budget' },
+    { id: 'settings', label: 'Settings' }
+  ];
+
+  return (
+    <>
+      {/* Top Navigation */}
+      <div className="bg-gradient-to-r from-indigo-600 to-purple-600 text-white px-6 py-4">
+        <div className="flex justify-between items-center">
+          <div className="text-xl font-bold">
+            {deviceType === 'mobile' ? '💰 Finance' : '💰 FinanceTracker'}
+          </div>
+          <div className="flex items-center space-x-3">
+            {deviceType !== 'mobile' && <span className="font-medium">John Doe</span>}
+            <div className="w-10 h-10 bg-white bg-opacity-20 rounded-full flex items-center justify-center font-bold">
+              JD
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Tab Navigation */}
+      <div className="bg-gray-50 px-4 py-3">
+        <div className={`flex justify-center gap-2 ${deviceType === 'mobile' ? 'gap-1' : 'gap-3'}`}>
+          {navigation.map(nav => (
+            <button
+              key={nav.id}
+              className={`px-4 py-2 rounded-full font-medium text-sm transition-all shadow-sm ${
+                currentPage === nav.id
+                  ? 'bg-indigo-600 text-white'
+                  : 'bg-white text-gray-700 hover:bg-indigo-50'
+              } ${deviceType === 'mobile' ? 'px-2 py-1 text-xs' : ''}`}
+            >
+              {nav.label}
+            </button>
+          ))}
+        </div>
+      </div>
+    </>
+  );
+};
+
+// Page Description Component
+const PageDescription = ({ title, description }: { title: string; description: string }) => (
+  <div className="bg-yellow-50 border-2 border-yellow-300 rounded-xl p-6 mb-8">
+    <h3 className="text-yellow-800 font-bold text-lg mb-3">{title}</h3>
+    <p className="text-yellow-700 leading-relaxed">{description}</p>
+  </div>
+);
+
+// Stat Card Component matching original design
+const StatCard = ({ title, value, gradient = 'from-blue-500 to-indigo-600' }: { 
+  title: string; 
+  value: string; 
+  gradient?: string;
+}) => (
+  <div className={`bg-gradient-to-br ${gradient} text-white p-6 rounded-xl shadow-lg`}>
+    <div className="text-3xl font-bold mb-2">{value}</div>
+    <div className="text-white text-opacity-90 font-medium">{title}</div>
+  </div>
+);
+
+// Transaction Item Component
+const TransactionItem = ({ transaction, showActions = false }: { 
+  transaction: Transaction; 
+  showActions?: boolean;
+}) => {
+  const { dispatch, deviceType } = useAppContext();
+  
+  const categoryInfo = [...categories.income, ...categories.expense]
+    .find(c => c.value === transaction.category);
+
+  const handleDelete = () => {
+    if (confirm('Are you sure you want to delete this transaction?')) {
+      dispatch({ type: 'DELETE_TRANSACTION', payload: transaction.id });
+    }
+  };
+
+  return (
+    <div className={`flex items-center justify-between py-4 border-b border-gray-100 ${
+      deviceType === 'mobile' ? 'py-3' : ''
+    }`}>
+      <div className="flex items-center space-x-4">
+        <div className={`rounded-full flex items-center justify-center font-bold ${
+          deviceType === 'mobile' ? 'w-8 h-8 text-sm' : 'w-10 h-10'
+        } ${
+          transaction.type === 'income' 
+            ? 'bg-green-100 text-green-600' 
+            : 'bg-red-100 text-red-600'
+        }`}>
+          {transaction.type === 'income' ? '+' : '-'}
+        </div>
+        <div>
+          <div className={`font-medium ${deviceType === 'mobile' ? 'text-sm' : ''}`}>
+            {transaction.description}
+          </div>
+          <div className={`text-gray-500 ${deviceType === 'mobile' ? 'text-xs' : 'text-sm'}`}>
+            {transaction.date} {categoryInfo && `• ${categoryInfo.label}`}
+          </div>
+        </div>
+      </div>
+      <div className="text-right">
+        <div className={`font-bold ${deviceType === 'mobile' ? 'text-sm' : ''} ${
+          transaction.type === 'income' ? 'text-green-600' : 'text-red-600'
+        }`}>
+          {transaction.type === 'income' ? '+' : '-'}${transaction.amount.toLocaleString()}
+        </div>
+        {showActions && (
+          <div className="flex space-x-2 mt-1">
+            <button className="text-indigo-600 hover:text-indigo-800 text-xs">
+              Edit
+            </button>
+            <span className="text-gray-400">|</span>
+            <button 
+              onClick={handleDelete}
+              className="text-red-600 hover:text-red-800 text-xs"
+            >
+              Delete
+            </button>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+};
+
+// Dashboard Component
+const Dashboard = () => {
+  const { state, deviceType } = useAppContext();
+  
+  const totalBalance = state.transactions.reduce((sum, t) => 
+    sum + (t.type === 'income' ? t.amount : -t.amount), 0
+  );
+  
+  const monthlyIncome = state.transactions
+    .filter(t => t.type === 'income' && new Date(t.date).getMonth() === new Date().getMonth())
+    .reduce((sum, t) => sum + t.amount, 0);
+    
+  const monthlyExpenses = state.transactions
+    .filter(t => t.type === 'expense' && new Date(t.date).getMonth() === new Date().getMonth())
+    .reduce((sum, t) => sum + t.amount, 0);
+
+  const monthlySavings = monthlyIncome - monthlyExpenses;
+
+  return (
+    <div className={`space-y-6 ${deviceType === 'mobile' ? 'space-y-4' : ''}`}>
+      {/* Stats Grid */}
+      <div className={`grid gap-4 ${
+        deviceType === 'desktop' 
+          ? 'grid-cols-4' 
+          : deviceType === 'tablet' 
+          ? 'grid-cols-2' 
+          : 'grid-cols-1'
+      }`}>
+        <StatCard 
+          title="Total Balance" 
+          value={`$${totalBalance.toLocaleString()}`} 
+          gradient="from-indigo-500 to-purple-600" 
+        />
+        <StatCard 
+          title={deviceType === 'mobile' ? 'Income' : 'This Month Income'} 
+          value={`$${monthlyIncome.toLocaleString()}`} 
+          gradient="from-green-500 to-emerald-600" 
+        />
+        <StatCard 
+          title={deviceType === 'mobile' ? 'Expenses' : 'This Month Expenses'} 
+          value={`$${monthlyExpenses.toLocaleString()}`} 
+          gradient="from-red-500 to-pink-600" 
+        />
+        <StatCard 
+          title={deviceType === 'mobile' ? 'Savings' : 'Monthly Savings'} 
+          value={`$${monthlySavings.toLocaleString()}`} 
+          gradient="from-blue-500 to-cyan-600" 
+        />
+      </div>
+
+      {/* Charts and Transactions */}
+      <div className={`grid gap-6 ${
+        deviceType === 'desktop' ? 'grid-cols-3' : 'grid-cols-1'
+      }`}>
+        {/* Spending Trend Chart */}
+        <div className={`bg-white rounded-xl shadow-lg ${
+          deviceType === 'desktop' ? 'col-span-2' : ''
+        }`}>
+          <div className="p-4 border-b border-gray-100">
+            <h3 className="text-lg font-semibold">
+              {deviceType === 'mobile' ? 'This Month' : 'Spending Trend'}
+            </h3>
+          </div>
+          <div className="p-6">
+            <div className={`bg-gradient-to-br from-gray-50 to-gray-100 rounded-lg flex items-center justify-center text-gray-500 ${
+              deviceType === 'mobile' ? 'h-32 text-sm' : 'h-48'
+            }`}>
+              📈 {deviceType === 'mobile' ? 'Mobile Chart' : 'Line Chart: Last 6 Months Spending'}
+            </div>
+          </div>
+        </div>
+
+        {/* Recent Transactions */}
+        <div className="bg-white rounded-xl shadow-lg">
+          <div className="p-4 border-b border-gray-100 flex justify-between items-center">
+            <h3 className={`font-semibold ${
+              deviceType === 'mobile' ? 'text-base' : 'text-lg'
+            }`}>
+              Recent {deviceType === 'mobile' ? '' : 'Transactions'}
+            </h3>
+            <button className="text-indigo-600 hover:text-indigo-800 text-sm">
+              View All
+            </button>
+          </div>
+          <div className={`${deviceType === 'mobile' ? 'p-4' : 'p-6'}`}>
+            <div className="space-y-1">
+              {state.transactions.slice(0, deviceType === 'mobile' ? 3 : 5).map(transaction => (
+                <TransactionItem key={transaction.id} transaction={transaction} />
+              ))}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+// Transactions Component
+const Transactions = () => {
+  const { state, deviceType } = useAppContext();
+  const [filter, setFilter] = useState({
+    category: '',
+    type: '',
+    timeRange: '',
+    search: ''
+  });
+
+  const filteredTransactions = state.transactions.filter(transaction => {
+    if (filter.category && transaction.category !== filter.category) return false;
+    if (filter.type && transaction.type !== filter.type) return false;
+    if (filter.search && !transaction.description.toLowerCase().includes(filter.search.toLowerCase())) return false;
+    return true;
+  });
+
+  return (
+    <div className="bg-white rounded-xl shadow-lg">
+      <div className="p-6 border-b border-gray-100">
+        <div className="flex justify-between items-center mb-4">
+          <h3 className="text-lg font-semibold">All Transactions</h3>
+          <div className="flex space-x-3">
+            <button className="flex items-center space-x-2 px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 text-sm">
+              <Download size={16} />
+              <span>{deviceType === 'mobile' ? 'Export' : 'Export CSV'}</span>
+            </button>
+            <button className="flex items-center space-x-2 px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 text-sm">
+              <PlusCircle size={16} />
+              <span>Add New</span>
+            </button>
+          </div>
+        </div>
+
+        {/* Filters */}
+        <div className={`flex flex-wrap gap-3 ${deviceType === 'mobile' ? 'gap-2' : ''}`}>
+          <select
+            className={`border border-gray-300 rounded-lg px-3 py-2 ${
+              deviceType === 'mobile' ? 'text-sm flex-1 min-w-0' : ''
+            }`}
+            value={filter.category}
+            onChange={(e) => setFilter({ ...filter, category: e.target.value })}
+          >
+            <option value="">All Categories</option>
+            {[...categories.income, ...categories.expense].map(cat => (
+              <option key={cat.value} value={cat.value}>{cat.label}</option>
+            ))}
+          </select>
+
+          <select
+            className={`border border-gray-300 rounded-lg px-3 py-2 ${
+              deviceType === 'mobile' ? 'text-sm flex-1 min-w-0' : ''
+            }`}
+            value={filter.type}
+            onChange={(e) => setFilter({ ...filter, type: e.target.value })}
+          >
+            <option value="">All Types</option>
+            <option value="income">Income Only</option>
+            <option value="expense">Expenses Only</option>
+          </select>
+
+          <select
+            className={`border border-gray-300 rounded-lg px-3 py-2 ${
+              deviceType === 'mobile' ? 'text-sm flex-1 min-w-0' : ''
+            }`}
+            value={filter.timeRange}
+            onChange={(e) => setFilter({ ...filter, timeRange: e.target.value })}
+          >
+            <option value="">All Time</option>
+            <option value="month">This Month</option>
+            <option value="quarter">Last 3 Months</option>
+          </select>
+
+          <input
+            type="text"
+            placeholder="Search transactions..."
+            className={`border border-gray-300 rounded-lg px-3 py-2 ${
+              deviceType === 'mobile' 
+                ? 'text-sm w-full' 
+                : 'min-w-48'
+            }`}
+            value={filter.search}
+            onChange={(e) => setFilter({ ...filter, search: e.target.value })}
+          />
+        </div>
+      </div>
+
+      <div className="p-6">
+        <div className="space-y-1">
+          {filteredTransactions.map(transaction => (
+            <TransactionItem 
+              key={transaction.id} 
+              transaction={transaction} 
+              showActions={true}
+            />
+          ))}
+        </div>
+
+        {filteredTransactions.length === 0 && (
+          <div className="text-center py-8 text-gray-500">
+            No transactions found matching your filters.
+          </div>
+        )}
+
+        {filteredTransactions.length > 0 && (
+          <div className="text-center pt-6">
+            <button className="px-6 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 text-sm">
+              Load More Transactions
+            </button>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+};
+
+// Transaction Form Component
+const TransactionForm = ({ onClose }: { onClose: () => void }) => {
+  const { dispatch } = useAppContext();
+  const [formData, setFormData] = useState({
+    type: 'expense' as TransactionType,
+    amount: '',
+    description: '',
+    category: '',
+    date: new Date().toISOString().split('T')[0],
+    notes: ''
+  });
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    const transaction: Transaction = {
+      id: Date.now().toString(),
+      amount: parseFloat(formData.amount),
+      description: formData.description,
+      category: formData.category,
+      type: formData.type,
+      date: formData.date,
+      notes: formData.notes || undefined
+    };
+
+    dispatch({ type: 'ADD_TRANSACTION', payload: transaction });
+    onClose();
+  };
+
+  return (
+    <div className="bg-white rounded-xl shadow-lg">
+      <div className="p-6 border-b border-gray-100 flex justify-between items-center">
+        <h3 className="text-lg font-semibold">Add New Transaction</h3>
+        <button 
+          onClick={onClose}
+          className="text-gray-400 hover:text-gray-600"
+        >
+          ✕
+        </button>
+      </div>
+
+      <div className="p-6">
+        <form onSubmit={handleSubmit} className="space-y-6">
+          {/* Transaction Type Selection */}
+          <div className="grid grid-cols-2 gap-4">
+            <label className={`flex items-center justify-center p-4 border-2 rounded-lg cursor-pointer transition-all ${
+              formData.type === 'income' 
+                ? 'border-green-500 bg-green-50 text-green-700' 
+                : 'border-gray-200 hover:border-green-300'
+            }`}>
+              <input
+                type="radio"
+                name="type"
+                value="income"
+                checked={formData.type === 'income'}
+                onChange={(e) => setFormData({ ...formData, type: e.target.value as TransactionType, category: '' })}
+                className="sr-only"
+              />
+              <span className="font-medium">💰 Income</span>
+            </label>
+
+            <label className={`flex items-center justify-center p-4 border-2 rounded-lg cursor-pointer transition-all ${
+              formData.type === 'expense' 
+                ? 'border-red-500 bg-red-50 text-red-700' 
+                : 'border-gray-200 hover:border-red-300'
+            }`}>
+              <input
+                type="radio"
+                name="type"
+                value="expense"
+                checked={formData.type === 'expense'}
+                onChange={(e) => setFormData({ ...formData, type: e.target.value as TransactionType, category: '' })}
+                className="sr-only"
+              />
+              <span className="font-medium">💸 Expense</span>
+            </label>
+          </div>
+
+          {/* Amount */}
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">Amount *</label>
+            <div className="relative">
+              <span className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-500 font-medium">$</span>
+              <input
+                type="number"
+                step="0.01"
+                required
+                className="w-full pl-8 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                placeholder="0.00"
+                value={formData.amount}
+                onChange={(e) => setFormData({ ...formData, amount: e.target.value })}
+              />
+            </div>
+          </div>
+
+          {/* Description */}
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">Description *</label>
+            <input
+              type="text"
+              required
+              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+              placeholder="e.g., Salary, Groceries, Gas..."
+              value={formData.description}
+              onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+            />
+          </div>
+
+          {/* Category and Date */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">Category *</label>
+              <select
+                required
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                value={formData.category}
+                onChange={(e) => setFormData({ ...formData, category: e.target.value })}
+              >
+                <option value="">Select category</option>
+                {categories[formData.type].map(cat => (
+                  <option key={cat.value} value={cat.value}>{cat.label}</option>
+                ))}
+              </select>
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">Date</label>
+              <input
+                type="date"
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                value={formData.date}
+                onChange={(e) => setFormData({ ...formData, date: e.target.value })}
+              />
+            </div>
+          </div>
+
+          {/* Notes */}
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">Notes (Optional)</label>
+            <textarea
+              rows={3}
+              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+              placeholder="Additional details about this transaction..."
+              value={formData.notes}
+              onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
+            />
+          </div>
+
+          {/* Submit Buttons */}
+          <div className="flex space-x-4 pt-4">
+            <button
+              type="submit"
+              className="flex-1 bg-indigo-600 text-white py-3 px-6 rounded-lg hover:bg-indigo-700 font-medium transition-colors"
+            >
+              Save Transaction
+            </button>
+            <button
+              type="button"
+              onClick={onClose}
+              className="px-6 py-3 border border-gray-300 rounded-lg hover:bg-gray-50 font-medium transition-colors"
+            >
+              Cancel
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  );
+};
+
+// Add Transaction Page Component
+const AddTransaction = () => {
+  const [showForm, setShowForm] = useState(true);
+
+  return (
+    <div>
+      <PageDescription 
+        title="➕ Add Transaction - Create New Financial Entry" 
+        description="Purpose: Form to add new income or expense. Includes validation, category selection, date picker. This is where you'll practice form management with useReducer and custom hooks."
+      />
+      {showForm && (
+        <TransactionForm onClose={() => setShowForm(false)} />
+      )}
+    </div>
+  );
+};
+
+// Reports Component
+const Reports = () => {
+  const { state, deviceType } = useAppContext();
+  
+  const monthlyIncome = state.transactions
+    .filter(t => t.type === 'income' && new Date(t.date).getMonth() === new Date().getMonth())
+    .reduce((sum, t) => sum + t.amount, 0);
+    
+  const monthlyExpenses = state.transactions
+    .filter(t => t.type === 'expense' && new Date(t.date).getMonth() === new Date().getMonth())
+    .reduce((sum, t) => sum + t.amount, 0);
+
+  // Calculate category spending
+  const categorySpending = state.transactions
+    .filter(t => t.type === 'expense')
+    .reduce((acc, t) => {
+      acc[t.category] = (acc[t.category] || 0) + t.amount;
+      return acc;
+    }, {} as Record<string, number>);
+
+  return (
+    <div className="space-y-6">
+      <PageDescription 
+        title="📊 Reports - Financial Analytics & Insights" 
+        description="Purpose: Visual charts and analytics. Monthly/yearly comparisons, category breakdowns, spending trends. Great place to implement chart libraries and data visualization."
+      />
+
+      <div className="flex justify-between items-center">
+        <h2 className="text-xl font-semibold">Financial Reports</h2>
+        <button className="flex items-center space-x-2 px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50">
+          <Download size={16} />
+          <span>Export Report</span>
+        </button>
+      </div>
+
+      <div className={`grid gap-6 ${deviceType === 'desktop' ? 'grid-cols-2' : 'grid-cols-1'}`}>
+        <div className="bg-white rounded-xl shadow-lg p-6">
+          <h3 className="text-lg font-semibold mb-4">Monthly Overview</h3>
+          <div className={`bg-gray-50 rounded-lg flex items-center justify-center text-gray-500 mb-4 ${
+            deviceType === 'mobile' ? 'h-48' : 'h-64'
+          }`}>
+            📊 Income vs Expenses Chart
+          </div>
+          <div className="flex justify-between text-sm">
+            <span>Income: <strong className="text-green-600">${monthlyIncome.toLocaleString()}</strong></span>
+            <span>Expenses: <strong className="text-red-600">${monthlyExpenses.toLocaleString()}</strong></span>
+          </div>
+        </div>
+
+        <div className="bg-white rounded-xl shadow-lg p-6">
+          <h3 className="text-lg font-semibold mb-4">Spending by Category</h3>
+          <div className={`bg-gray-50 rounded-lg flex items-center justify-center text-gray-500 mb-4 ${
+            deviceType === 'mobile' ? 'h-48' : 'h-64'
+          }`}>
+            🥧 Category Breakdown Chart
+          </div>
+          <div className="space-y-2">
+            {Object.entries(categorySpending)
+              .sort(([,a], [,b]) => b - a)
+              .slice(0, 3)
+              .map(([category, amount]) => {
+                const categoryInfo = [...categories.income, ...categories.expense]
+                  .find(c => c.value === category);
+                return (
+                  <div key={category} className="flex justify-between text-sm">
+                    <span>{categoryInfo?.label || category}</span>
+                    <strong>${amount.toLocaleString()}</strong>
+                  </div>
+                );
+              })}
+          </div>
+        </div>
+      </div>
+
+      <div className="bg-white rounded-xl shadow-lg p-6">
+        <h3 className="text-lg font-semibold mb-4">Spending Trends</h3>
+        <div className={`bg-gray-50 rounded-lg flex items-center justify-center text-gray-500 mb-4 ${
+          deviceType === 'mobile' ? 'h-48' : 'h-64'
+        }`}>
+          📈 12-Month Trend Line Chart
+        </div>
+        
+        <div className={`grid gap-4 ${
+          deviceType === 'mobile' ? 'grid-cols-2' : 'grid-cols-4'
+        }`}>
+          <div className="text-center p-4 bg-gray-50 rounded-lg">
+            <div className="text-2xl font-bold text-green-600">${monthlyIncome.toLocaleString()}</div>
+            <div className="text-sm text-gray-600">This Month</div>
+          </div>
+          <div className="text-center p-4 bg-gray-50 rounded-lg">
+            <div className="text-2xl font-bold text-red-600">${monthlyExpenses.toLocaleString()}</div>
+            <div className="text-sm text-gray-600">Spent</div>
+          </div>
+          <div className="text-center p-4 bg-gray-50 rounded-lg">
+            <div className="text-2xl font-bold text-indigo-600">
+              ${state.transactions.filter(t => t.type === 'expense').length > 0 
+                ? Math.round(monthlyExpenses / state.transactions.filter(t => t.type === 'expense').length).toLocaleString()
+                : '0'}
+            </div>
+            <div className="text-sm text-gray-600">Avg Transaction</div>
+          </div>
+          <div className="text-center p-4 bg-gray-50 rounded-lg">
+            <div className="text-2xl font-bold text-green-600">
+              ↗ {monthlyIncome > 0 ? Math.round(((monthlyIncome - monthlyExpenses) / monthlyIncome) * 100) : 0}%
+            </div>
+            <div className="text-sm text-gray-600">Savings Rate</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+// Budget Component
+const Budget = () => {
+  const { state, dispatch, deviceType } = useAppContext();
+  
+  const totalBudget = state.budgets.reduce((sum, b) => sum + b.limit, 0);
+  const totalSpent = state.budgets.reduce((sum, b) => sum + b.spent, 0);
+  const totalRemaining = totalBudget - totalSpent;
+
+  return (
+    <div className="space-y-6">
+      <PageDescription 
+        title="🎯 Budget - Set & Track Spending Goals" 
+        description="Purpose: Create monthly budgets for each category, track progress with visual indicators, get alerts when approaching limits. Perfect for complex state management with useReducer."
+      />
+
+      <div className={`grid gap-4 ${
+        deviceType === 'mobile' ? 'grid-cols-1' : 'grid-cols-3'
+      }`}>
+        <StatCard title="Total Budget" value={`${totalBudget.toLocaleString()}`} gradient="from-blue-500 to-blue-600" />
+        <StatCard title="Total Spent" value={`${totalSpent.toLocaleString()}`} gradient="from-red-500 to-red-600" />
+        <StatCard title="Remaining" value={`${totalRemaining.toLocaleString()}`} gradient="from-green-500 to-green-600" />
+      </div>
+
+      <div className="bg-white rounded-xl shadow-lg p-6">
+        <div className="flex justify-between items-center mb-6">
+          <h3 className="text-lg font-semibold">Budget Categories</h3>
+          <button className="bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700">
+            Add Category
+          </button>
+        </div>
+
+        <div className="space-y-4">
+          {state.budgets.map(budget => {
+            const percentage = Math.round((budget.spent / budget.limit) * 100);
+            const isOverBudget = percentage > 100;
+            const isNearLimit = percentage > 80 && percentage <= 100;
+
+            return (
+              <div key={budget.id} className="border border-gray-200 rounded-lg p-4">
+                <div className="flex justify-between items-center mb-3">
+                  <div>
+                    <h4 className="font-medium">{budget.icon} {budget.category}</h4>
+                    <p className="text-sm text-gray-600">
+                      ${budget.spent.toLocaleString()} of ${budget.limit.toLocaleString()} spent
+                    </p>
+                  </div>
+                  <div className="text-right">
+                    <div className={`text-lg font-bold ${
+                      isOverBudget ? 'text-red-600' : isNearLimit ? 'text-yellow-600' : 'text-green-600'
+                    }`}>
+                      {percentage}%
+                    </div>
+                    <div className="text-xs text-gray-500">
+                      {isOverBudget ? '🚨 Over budget' : isNearLimit ? '⚠️ Near limit' : '✅ On track'}
+                    </div>
+                  </div>
+                </div>
+                
+                <div className="w-full bg-gray-200 rounded-full h-2">
+                  <div 
+                    className={`h-2 rounded-full transition-all ${
+                      isOverBudget 
+                        ? 'bg-red-500' 
+                        : isNearLimit 
+                        ? 'bg-yellow-500' 
+                        : 'bg-green-500'
+                    }`}
+                    style={{ width: `${Math.min(percentage, 100)}%` }}
+                  />
+                </div>
+              </div>
+            );
+          })}
+        </div>
+
+        <div className="mt-6 space-y-3">
+          <h4 className="font-medium">Budget Alerts</h4>
+          {state.budgets
+            .filter(b => (b.spent / b.limit) > 0.8)
+            .map(budget => {
+              const percentage = Math.round((budget.spent / budget.limit) * 100);
+              const isOverBudget = percentage > 100;
+              
+              return (
+                <div key={`alert-${budget.id}`} className={`p-3 rounded-lg ${
+                  isOverBudget ? 'bg-red-50 border border-red-200' : 'bg-yellow-50 border border-yellow-200'
+                }`}>
+                  <div className={`font-medium ${isOverBudget ? 'text-red-800' : 'text-yellow-800'}`}>
+                    {isOverBudget ? '🚨 Over Budget Alert' : '⚠️ Near Limit Warning'}
+                  </div>
+                  <div className={`text-sm ${isOverBudget ? 'text-red-700' : 'text-yellow-700'}`}>
+                    {budget.category} is at {percentage}% of your budget limit.
+                  </div>
+                </div>
+              );
+            })}
+        </div>
+      </div>
+    </div>
+  );
+};
+
+// Settings Component
+const Settings = () => {
+  const { state, dispatch } = useAppContext();
+
+  const handleToggle = (key: string, value: any) => {
+    dispatch({ type: 'TOGGLE_SETTING', payload: { key, value } });
+  };
+
+  const handleNotificationToggle = (key: string, value: boolean) => {
+    dispatch({ type: 'TOGGLE_NOTIFICATION', payload: { key, value } });
+  };
+
+  const Toggle = ({ checked, onChange }: { checked: boolean; onChange: (value: boolean) => void }) => (
+    <button
+      onClick={() => onChange(!checked)}
+      className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
+        checked ? 'bg-indigo-600' : 'bg-gray-200'
+      }`}
+    >
+      <span
+        className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
+          checked ? 'translate-x-6' : 'translate-x-1'
+        }`}
+      />
+    </button>
+  );
+
+  return (
+    <div className="space-y-6">
+      <PageDescription 
+        title="⚙️ Settings - App Configuration & Preferences" 
+        description="Purpose: User preferences, theme switching, data export/import, account settings. Great for practicing localStorage with custom hooks and theme management."
+      />
+
+      <div className="bg-white rounded-xl shadow-lg p-6">
+        <h3 className="text-lg font-semibold mb-4">Appearance</h3>
+        <div className="space-y-4">
+          <div className="flex justify-between items-center">
+            <div>
+              <div className="font-medium">Dark Mode</div>
+              <div className="text-sm text-gray-600">Switch between light and dark themes</div>
+            </div>
+            <Toggle 
+              checked={state.settings.darkMode} 
+              onChange={(value) => handleToggle('darkMode', value)} 
+            />
+          </div>
+          
+          <div className="flex justify-between items-center">
+            <div>
+              <div className="font-medium">Currency</div>
+              <div className="text-sm text-gray-600">Choose your preferred currency</div>
+            </div>
+            <select 
+              className="px-3 py-2 border border-gray-300 rounded-lg"
+              value={state.settings.currency}
+              onChange={(e) => handleToggle('currency', e.target.value)}
+            >
+              <option value="USD">USD ($)</option>
+              <option value="EUR">EUR (€)</option>
+              <option value="GBP">GBP (£)</option>
+              <option value="JPY">JPY (¥)</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <div className="bg-white rounded-xl shadow-lg p-6">
+        <h3 className="text-lg font-semibold mb-4">Notifications</h3>
+        <div className="space-y-4">
+          <div className="flex justify-between items-center">
+            <div>
+              <div className="font-medium">Budget Alerts</div>
+              <div className="text-sm text-gray-600">Get notified when approaching budget limits</div>
+            </div>
+            <Toggle 
+              checked={state.settings.notifications.budgetAlerts} 
+              onChange={(value) => handleNotificationToggle('budgetAlerts', value)} 
+            />
+          </div>
+          
+          <div className="flex justify-between items-center">
+            <div>
+              <div className="font-medium">Monthly Reports</div>
+              <div className="text-sm text-gray-600">Receive monthly spending summaries</div>
+            </div>
+            <Toggle 
+              checked={state.settings.notifications.monthlyReports} 
+              onChange={(value) => handleNotificationToggle('monthlyReports', value)} 
+            />
+          </div>
+          
+          <div className="flex justify-between items-center">
+            <div>
+              <div className="font-medium">Transaction Reminders</div>
+              <div className="text-sm text-gray-600">Remind to log recurring transactions</div>
+            </div>
+            <Toggle 
+              checked={state.settings.notifications.transactionReminders} 
+              onChange={(value) => handleNotificationToggle('transactionReminders', value)} 
+            />
+          </div>
+        </div>
+      </div>
+
+      <div className="bg-white rounded-xl shadow-lg p-6">
+        <h3 className="text-lg font-semibold mb-4">Data Management</h3>
+        <div className="space-y-4">
+          <div className="flex justify-between items-center">
+            <div>
+              <div className="font-medium">Export Data</div>
+              <div className="text-sm text-gray-600">Download your financial data</div>
+            </div>
+            <div className="flex space-x-2">
+              <button className="flex items-center space-x-2 px-3 py-2 border border-gray-300 rounded-lg hover:bg-gray-50">
+                <Download size={16} />
+                <span>CSV</span>
+              </button>
+              <button className="flex items-center space-x-2 px-3 py-2 border border-gray-300 rounded-lg hover:bg-gray-50">
+                <Download size={16} />
+                <span>JSON</span>
+              </button>
+            </div>
+          </div>
+          
+          <div className="flex justify-between items-center">
+            <div>
+              <div className="font-medium">Import Data</div>
+              <div className="text-sm text-gray-600">Upload financial data from CSV</div>
+            </div>
+            <button className="flex items-center space-x-2 px-3 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700">
+              <Upload size={16} />
+              <span>Import</span>
+            </button>
+          </div>
+          
+          <div className="flex justify-between items-center">
+            <div>
+              <div className="font-medium">Clear All Data</div>
+              <div className="text-sm text-red-600">⚠️ This will permanently delete all your data</div>
+            </div>
+            <button className="px-3 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700">
+              Clear Data
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+// Floating Add Button
+const FloatingAddButton = ({ onClick }: { onClick: () => void }) => {
+  const { deviceType } = useAppContext();
+  
+  return (
+    <button
+      onClick={onClick}
+      className={`fixed bg-gradient-to-r from-indigo-600 to-purple-600 text-white rounded-full shadow-lg hover:shadow-xl transition-all hover:scale-110 flex items-center justify-center z-40 ${
+        deviceType === 'mobile' 
+          ? 'bottom-4 right-4 w-12 h-12' 
+          : 'bottom-6 right-6 w-14 h-14'
+      }`}
+    >
+      <PlusCircle size={deviceType === 'mobile' ? 20 : 24} />
+    </button>
+  );
+};
+
+// Main App Component
+const App = () => {
+  const [state, dispatch] = useReducer(appReducer, initialState);
+  const [currentPage, setCurrentPage] = useState('dashboard');
+  const [deviceType, setDeviceType] = useState<DeviceType>('desktop');
+  const [showAddTransaction, setShowAddTransaction] = useState(false);
+
+  // Auto-detect device type based on screen size
+  useEffect(() => {
+    const handleResize = () => {
+      const width = window.innerWidth;
+      if (width >= 1024) setDeviceType('desktop');
+      else if (width >= 768) setDeviceType('tablet');
+      else setDeviceType('mobile');
+    };
+
+    handleResize();
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
+  const renderPage = () => {
+    switch (currentPage) {
+      case 'dashboard':
+        return <Dashboard />;
+      case 'transactions':
+        return <Transactions />;
+      case 'add-transaction':
+        return <AddTransaction />;
+      case 'reports':
+        return <Reports />;
+      case 'budget':
+        return <Budget />;
+      case 'settings':
+        return <Settings />;
+      default:
+        return <Dashboard />;
+    }
+  };
+
+  return (
+    <AppContext.Provider value={{ 
+      state, 
+      dispatch, 
+      currentPage, 
+      setCurrentPage, 
+      deviceType, 
+      setDeviceType 
+    }}>
+      <div className="min-h-screen bg-gray-50">
+        <AppHeader />
+        
+        <DeviceMockup>
+          <MockupHeader />
+          <div className={`${
+            deviceType === 'mobile' ? 'p-4' : deviceType === 'tablet' ? 'p-6' : 'p-8'
+          } min-h-96`}>
+            {renderPage()}
+          </div>
+        </DeviceMockup>
+
+        <FloatingAddButton onClick={() => setShowAddTransaction(true)} />
+        
+        {showAddTransaction && (
+          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+            <div className="bg-white rounded-xl shadow-xl w-full max-w-md max-h-90vh overflow-y-auto">
+              <TransactionForm onClose={() => setShowAddTransaction(false)} />
+            </div>
+          </div>
+        )}
+      </div>
+    </AppContext.Provider>
+  );
+};
+
+
 }
 
 export default Mockup
+
+/**
+
+
+ */

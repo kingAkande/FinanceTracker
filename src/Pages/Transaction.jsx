@@ -1,12 +1,14 @@
 import React from "react";
 import PageNav from "../Components/PageNav";
 import Header from "./Header";
-
+import { Link } from "react-router-dom";
+import { PlusCircle,  Download } from "lucide-react";
 const Transaction = () => {
   return (
     <>
       {/* <div classNameName="mx-auto w-[320px] lg:w-[768px] mt-10">
-        <div classNameName="mt-4  bg-[#d8c7c7] rounded-xl w-[320px] lg:w-[768px] ">
+        <div classNameName="mt-import React from "react";
+4  bg-[#d8c7c7] rounded-xl w-[320px] lg:w-[768px] ">
           <div className=" flex justify-between p-6 bg-amber-200  rounded-t-xl">
             <div className=" text-2xl font-bold">Recent Transaction </div>
             <div> View All</div>
@@ -163,12 +165,16 @@ const Transaction = () => {
               <div className="px-8 py-5 border-b border-slate-200 flex justify-between items-center bg-[#fafbfc]">
                 <h3 className="text-lg font-semibold">All Transactions</h3>
                 <div className="flex gap-2">
-                  <button className="px-6 py-3 rounded-lg font-medium border border-indigo-600 text-indigo-600 bg-white transition hover:bg-indigo-50">
-                    Export CSV
+                  
+                  <button className="flex gap-2 px-6 py-3 rounded-lg font-medium border border-indigo-600 text-indigo-600 bg-white transition hover:bg-indigo-50">
+                  <Download/>
+                   <span></span> Export CSV
                   </button>
-                  <button className="px-6 py-3 rounded-lg font-medium text-white bg-gradient-to-r from-indigo-600 to-violet-600 transition hover:opacity-90">
-                    Add New
-                  </button>
+                  <Link to="/addTransaction">
+                    <button className="px-6 py-3 flex gap-2 rounded-lg font-medium text-white bg-gradient-to-r from-indigo-600 to-violet-600 transition hover:opacity-90">
+                     <span><PlusCircle/></span> Add New
+                    </button>
+                  </Link>
                 </div>
               </div>
 
