@@ -14,18 +14,10 @@ const Dashboard = () => {
           <div className="p-8 min-h-[500px]">
             {/* <!-- Stats Grid --> */}
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 mb-8">
-              <div className="bg-gradient-to-r from-indigo-400 to-violet-500 text-white p-6 rounded-xl text-center">
-                <div className="text-2xl font-bold mb-1">$2,450</div>
-                <div className="opacity-90">Total Balance</div>
-              </div>
-              <div className="bg-gradient-to-r from-indigo-400 to-violet-500 text-white p-6 rounded-xl text-center">
-                <div className="text-2xl font-bold mb-1">$1,200</div>
-                <div className="opacity-90">This Month Income</div>
-              </div>
-              <div className="bg-gradient-to-r from-indigo-400 to-violet-500 text-white p-6 rounded-xl text-center">
-                <div className="text-2xl font-bold mb-1">$850</div>
-                <div className="opacity-90">This Month Expenses</div>
-              </div>
+              <MoneyStatus amount="$2,450" message={`Total Balance`} />
+              <MoneyStatus amount="$1,200" message={`This Month Income`} />
+              <MoneyStatus amount="$850" message={`This Month Expenses`} />
+
               <div className="bg-gradient-to-r from-indigo-400 to-violet-500 text-white p-6 rounded-xl text-center">
                 <div className="text-2xl font-bold mb-1">$350</div>
                 <div className="opacity-90">Monthly Savings</div>
@@ -54,20 +46,8 @@ const Dashboard = () => {
               </div>
               <div className="p-8">
                 {/* <!-- Transaction 1 --> */}
-                <div className="flex justify-between items-center py-4 border-b border-slate-100">
-                  <div className="flex items-center gap-4">
-                    <div className="w-10 h-10 rounded-full flex items-center justify-center font-bold bg-green-100 text-green-700">
-                      +
-                    </div>
-                    <div>
-                      <div className="font-medium">Salary</div>
-                      <div className="text-slate-500 text-sm">
-                        Today • Payroll
-                      </div>
-                    </div>
-                  </div>
-                  <div className="text-green-600 font-bold">+$2,500</div>
-                </div>
+         
+                <Recentranction category={`Salary`} date={`Today`} description={`Payroll`} amount={`+$2,500`}/>
                 {/* <!-- Transaction 2 --> */}
                 <div className="flex justify-between items-center py-4 border-b border-slate-100">
                   <div className="flex items-center gap-4">
@@ -94,36 +74,54 @@ const Dashboard = () => {
 
 export default Dashboard;
 
-function MoneyTracker({ ammount, message }) {
+function MoneyStatus({ amount, message }) {
   return (
     <div>
-      <div className="w-[230px] py-6 text-white flex flex-col items-center bg-[linear-gradient(135deg,#4f46e5,#7c3aed)] border rounded-2xl">
-        <h1 className="font-bold text-3xl mb-4">{ammount}</h1>
-        <h1>{message} </h1>
+      <div className="bg-gradient-to-r from-indigo-400 to-violet-500 text-white p-6 rounded-xl text-center">
+        <div className="text-2xl font-bold mb-1">{amount}</div>
+        <div className="opacity-90">{message}</div>
       </div>
     </div>
   );
 }
 
-function Recentranction({ category, date, description, ammount, children }) {
+export function Recentranction({ trxObj, children }) {
   return (
-    <div>
-      <div className="flex justify-between py-10 px-6">
-        <div className=" flex ">
-          <button className="rounded-full bg-sky-500 mr-4 px-4 py-2 ">+</button>
-          <div>
-            <h1>{category}</h1>
-            <p>
-              {date} &bull;{description}{" "}
-            </p>
-          </div>
+    // <div>
+    //   <div className="flex justify-between py-10 px-6">
+    //     <div className=" flex ">
+    //       <button className="rounded-full bg-sky-500 mr-4 px-4 py-2 ">+</button>
+    //       <div>
+    //         <h1>{category}</h1>
+    //         <p>
+    //           {date} &bull;{description}{" "}
+    //         </p>
+    //       </div>
+    //     </div>
+    //     <div>
+    //       <h1>{amount}</h1>
+    //       {children}
+    //     </div>
+    //   </div>
+    //   <hr className="mx-6 text-white" />
+    // </div>
+
+    <div className="flex justify-between items-center py-4 border-b border-slate-100">
+      <div className="flex items-center gap-4">
+        <div className="w-10 h-10 rounded-full flex items-center justify-center font-bold bg-green-100 text-green-700">
+          +
         </div>
         <div>
-          <h1>{ammount}</h1>
-          {children}
+          <div className="font-medium">{trxObj.category}</div>
+          <div className="text-slate-500 text-sm">
+            {trxObj.date} • {trxObj.description}
+          </div>
         </div>
       </div>
-      <hr className="mx-6 text-white" />
+      <div>
+        <div className="text-green-600 text-center font-bold">{trxObj.amount}</div>
+        {children}
+      </div>
     </div>
   );
 }

@@ -1,8 +1,42 @@
 import React from "react";
 import PageNav from "../Components/PageNav";
 import Header from "./Header";
+import { useState } from "react";
+import { Check } from "lucide-react";
 
-const AddTransaction = () => {
+const AddTransaction = ({
+  setAmount,
+  setDiscription,
+  setCategory,
+  setNotes,
+  setTransactions,
+  setDate,
+  amount,
+  description,
+  category,
+  notes,
+  date,
+}) => {
+  const [transactionState, setTransactionState] = useState("");
+  // const [amount , setAmount] = useState("");
+  // const [description , setDiscription ] = useState("");
+  // const[category , setCategory ]= useState("");
+  // const[notes , setNotes]= useState("");
+  // const[transactions , setTransactions] = useState([]);
+
+  function handleSubmit(e) {
+    e.preventDefault();
+    const newTX = {
+      amount: amount,
+      description: description,
+      category: category,
+      notes: notes,
+      date:date,
+    };
+
+    setTransactions((prevTx) => [...prevTx, newTX]);
+  }
+
   return (
     <div>
       <div className="bg-white rounded-[20px] shadow-[0_20px_40px_rgba(0,0,0,0.1)] overflow-hidden mx-auto max-w-[900px] border-8 border-slate-800">
@@ -18,11 +52,11 @@ const AddTransaction = () => {
 
             {/* <!-- Section Body --> */}
             <div class="p-8">
-              <form class="space-y-6">
+              <form class="space-y-6" onSubmit={handleSubmit}>
                 {/* <!-- Income / Expense Radios --> */}
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-5 mb-6">
                   <label class="flex items-center gap-3 p-4 border-2 border-indigo-600 rounded-lg bg-sky-50 cursor-pointer">
-                    <input type="radio" name="type" value="income" checked />
+                    <input type="radio" name="type" value="income" />
                     <span class="text-emerald-600 font-medium">💰 Income</span>
                   </label>
                   <label class="flex items-center gap-3 p-4 border-2 border-gray-200 rounded-lg cursor-pointer">
@@ -45,6 +79,8 @@ const AddTransaction = () => {
                       placeholder="0.00"
                       step="0.01"
                       required
+                      value={amount}
+                      onChange={(e) => setAmount(e.target.value)}
                       class="w-full pl-9 pr-4 py-3 border border-gray-300 rounded-lg text-base focus:outline-none focus:border-indigo-600 focus:ring-2 focus:ring-indigo-600/10"
                     />
                   </div>
@@ -59,6 +95,8 @@ const AddTransaction = () => {
                     type="text"
                     placeholder="e.g., Salary, Groceries, Gas..."
                     required
+                    value={description}
+                    onChange={(e) => setDiscription(e.target.value)}
                     class="w-full px-4 py-3 border border-gray-300 rounded-lg text-base focus:outline-none focus:border-indigo-600 focus:ring-2 focus:ring-indigo-600/10"
                   />
                 </div>
@@ -70,6 +108,8 @@ const AddTransaction = () => {
                       Category *
                     </label>
                     <select
+                      value={category}
+                      onChange={(e) => setCategory(e.target.value)}
                       required
                       class="w-full px-4 py-3 border border-gray-300 rounded-lg text-base focus:outline-none focus:border-indigo-600 focus:ring-2 focus:ring-indigo-600/10"
                     >
@@ -92,7 +132,8 @@ const AddTransaction = () => {
                     </label>
                     <input
                       type="date"
-                      value="2024-01-15"
+                      value={date}
+                      onChange={(e)=>setDate(e.target.value)}
                       class="w-full px-4 py-3 border border-gray-300 rounded-lg text-base focus:outline-none focus:border-indigo-600 focus:ring-2 focus:ring-indigo-600/10"
                     />
                   </div>
@@ -104,6 +145,8 @@ const AddTransaction = () => {
                     Notes (Optional)
                   </label>
                   <textarea
+                    value={notes}
+                    onChange={(e) => setNotes(e.target.value)}
                     rows="3"
                     placeholder="Additional details about this transaction..."
                     class="w-full px-4 py-3 border border-gray-300 rounded-lg text-base focus:outline-none focus:border-indigo-600 focus:ring-2 focus:ring-indigo-600/10"
