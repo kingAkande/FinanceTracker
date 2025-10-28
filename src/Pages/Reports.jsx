@@ -1,23 +1,29 @@
 import React from "react";
 import PageNav from "../Components/PageNav";
 import Header from "./Header";
+import { PlusCircle, Download } from "lucide-react";
+
 
 const Reports = () => {
   return (
     <div>
-      <div className="bg-white rounded-[20px] shadow-[0_20px_40px_rgba(0,0,0,0.1)] overflow-hidden mx-auto max-w-[900px] border-8 border-slate-800">
+      {/* `grid gap-6 ${deviceType === 'desktop' ? 'grid-cols-2' : 'grid-cols-1'}` */}
+
+      
+      <div className="bg-white  rounded-[20px] shadow-[0_20px_40px_rgba(0,0,0,0.1)] overflow-hidden mx-auto w-[350px] md:w-[689px] lg:w-[900px] border-6 border-violet-400">
         <Header />
         <PageNav />
-        <div class="p-6 space-y-6">
+        <div class=" p-4 md:p-6 space-y-6">
           {/* <!-- Filter Bar --> */}
           <div class="flex justify-between items-center mb-6">
-            <select class="border border-slate-300 rounded-lg px-4 py-2 text-slate-700">
+            <select class="border border-slate-300 rounded-lg lg:h-12 px-4 py-2 text-slate-700">
               <option>This Year</option>
               <option>Last Year</option>
               <option>Last 6 Months</option>
               <option>Custom Range</option>
             </select>
-            <button class="bg-slate-200 px-5 py-2 rounded-lg font-medium hover:bg-slate-300">
+            <button class="flex text-sm md:text-lg gap-2 px-2 md:px-5 py-2 rounded-lg font-medium  items-center border border-indigo-600 text-indigo-600 bg-white transition hover:bg-indigo-50 ">
+              <Download className="h-4 md:h-6" />
               Export Report
             </button>
           </div>
@@ -26,7 +32,7 @@ const Reports = () => {
           <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-6">
             {/* <!-- Monthly Income vs Expenses --> */}
             <div class="bg-white p-6 rounded-xl shadow">
-              <div class="border-b pb-2 mb-4">
+              <div class="border-b border-slate-200 pb-2 mb-4">
                 <h3 class="text-lg font-semibold">
                   Monthly Income vs Expenses
                 </h3>
@@ -36,17 +42,17 @@ const Reports = () => {
               </div>
               <div class="flex justify-between mt-4 text-sm text-slate-600">
                 <span>
-                  Avg Income: <strong class="text-emerald-600">$2,400</strong>
+                   Income: <strong class="text-emerald-600">$2,400</strong>
                 </span>
                 <span>
-                  Avg Expenses: <strong class="text-red-600">$1,850</strong>
+                   Expenses: <strong class="text-red-600">$1,850</strong>
                 </span>
               </div>
             </div>
 
             {/* <!-- Spending by Category --> */}
             <div class="bg-white p-6 rounded-xl shadow">
-              <div class="border-b pb-2 mb-4">
+              <div class="border-b border-slate-200 pb-2 mb-4">
                 <h3 class="text-lg font-semibold">Spending by Category</h3>
               </div>
               <div class="text-center py-12 bg-slate-100 rounded-lg">
@@ -72,7 +78,7 @@ const Reports = () => {
 
         {/* <!-- Spending Trends --> */}
         <div class="bg-white p-6 rounded-xl shadow">
-          <div class="border-b pb-2 mb-4">
+          <div class="border-b border-slate-200 pb-2 mb-4">
             <h3 class="text-lg font-semibold">Spending Trends</h3>
           </div>
           <div class="text-center py-12 bg-slate-100 rounded-lg">

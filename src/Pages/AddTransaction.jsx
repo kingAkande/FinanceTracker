@@ -3,6 +3,7 @@ import PageNav from "../Components/PageNav";
 import Header from "./Header";
 import { useState } from "react";
 import { Check } from "lucide-react";
+import {useNavigate } from "react-router-dom";
 
 const AddTransaction = ({
   setAmount,
@@ -16,6 +17,10 @@ const AddTransaction = ({
   category,
   notes,
   date,
+  isEditing,
+  editingIndex,
+  setEditingIndex,
+  setIsEditing,
 }) => {
   const [transactionState, setTransactionState] = useState("");
   // const [amount , setAmount] = useState("");
@@ -23,26 +28,48 @@ const AddTransaction = ({
   // const[category , setCategory ]= useState("");
   // const[notes , setNotes]= useState("");
   // const[transactions , setTransactions] = useState([]);
+const navigate = useNavigate();
 
   function handleSubmit(e) {
     e.preventDefault();
-    const newTX = {
-      amount: amount,
-      description: description,
-      category: category,
-      notes: notes,
-      date:date,
-    };
 
-    setTransactions((prevTx) => [...prevTx, newTX]);
+    if (isEditing) {
+      setTransactions((state) =>
+        state.map((el, i) =>
+          editingIndex === i
+            ? { amount, description, category, notes, date }
+            : el
+        )
+      );
+    } else {
+      const newTX = {
+        amount: amount,
+        description: description,
+        category: category,
+        notes: notes,
+        date: date,
+      };
+
+      setTransactions((prevTx) => [...prevTx, newTX]);
+    }
+
+    setAmount("");
+    setDiscription("");
+    setCategory("");
+    setNotes("");
+    setDate("");
+
+    setIsEditing(false);
+    setEditingIndex(null);
+    navigate("/dashboard")
   }
 
   return (
     <div>
-      <div className="bg-white rounded-[20px] shadow-[0_20px_40px_rgba(0,0,0,0.1)] overflow-hidden mx-auto max-w-[900px] border-8 border-slate-800">
+      <div className="bg-white rounded-[20px] shadow-[0_20px_40px_rgba(0,0,0,0.1)] overflow-hidden mx-auto  w-[350px] md:w-[689px] lg:w-[900px]  border-6 border-violet-400">
         <Header />
         <PageNav />
-        <div class="p-8 min-h-[500px]">
+        <div class="p-4 md:p-8 min-h-[500px]">
           <div class="bg-white rounded-xl shadow-md mb-8 overflow-hidden">
             {/* <!-- Section Header --> */}
             <div class="flex items-center justify-between border-b border-slate-200 px-6 py-5 bg-[#fafbfc]">
@@ -52,15 +79,15 @@ const AddTransaction = ({
 
             {/* <!-- Section Body --> */}
             <div class="p-8">
-              <form class="space-y-6" onSubmit={handleSubmit}>
+              <form class="space-y-4" onSubmit={handleSubmit}>
                 {/* <!-- Income / Expense Radios --> */}
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-5 mb-6">
-                  <label class="flex items-center gap-3 p-4 border-2 border-indigo-600 rounded-lg bg-sky-50 cursor-pointer">
-                    <input type="radio" name="type" value="income" />
-                    <span class="text-emerald-600 font-medium">💰 Income</span>
+                <div class="grid grid-cols-2 gap-5 mb-6 justify-center  ">
+                  <label class="flex justify-center items-center h-12 md:h-15 gap-3 p-2 md:p-4 border-2 border-gray-200 rounded-lg bg-sky-50 cursor-pointer ">
+                    {/* <input type="radio" name="type" value="income" /> */}
+                    <span class="text-emerald-600 font-medium ">💰 Income</span>
                   </label>
-                  <label class="flex items-center gap-3 p-4 border-2 border-gray-200 rounded-lg cursor-pointer">
-                    <input type="radio" name="type" value="expense" />
+                  <label class="flex justify-center items-center h-12 md:h-15 gap-3 p-2 border-2 border-gray-200 rounded-lg bg-sky-50 cursor-pointer">
+                    {/* <input type="radio" name="type" value="expense" /> */}
                     <span class="text-red-600 font-medium">💸 Expense</span>
                   </label>
                 </div>
@@ -114,16 +141,16 @@ const AddTransaction = ({
                       class="w-full px-4 py-3 border border-gray-300 rounded-lg text-base focus:outline-none focus:border-indigo-600 focus:ring-2 focus:ring-indigo-600/10"
                     >
                       <option value="">Select category</option>
-                      <option value="salary">💼 Salary</option>
-                      <option value="freelance">💻 Freelance</option>
-                      <option value="investment">📈 Investment</option>
-                      <option value="food">🍕 Food & Dining</option>
-                      <option value="transport">🚗 Transportation</option>
-                      <option value="shopping">🛍️ Shopping</option>
-                      <option value="bills">🏠 Bills & Utilities</option>
-                      <option value="entertainment">🎬 Entertainment</option>
-                      <option value="health">⚕️ Healthcare</option>
-                      <option value="other">📝 Other</option>
+                      <option value="Salary">💼 Salary</option>
+                      <option value="Freelance">💻 Freelance</option>
+                      <option value="Investment">📈 Investment</option>
+                      <option value="Food">🍕 Food & Dining</option>
+                      <option value="Transport">🚗 Transportation</option>
+                      <option value="Shopping">🛍️ Shopping</option>
+                      <option value="Bills">🏠 Bills & Utilities</option>
+                      <option value="Entertainment">🎬 Entertainment</option>
+                      <option value="Health">⚕️ Healthcare</option>
+                      <option value="Other">📝 Other</option>
                     </select>
                   </div>
                   <div>
@@ -133,7 +160,8 @@ const AddTransaction = ({
                     <input
                       type="date"
                       value={date}
-                      onChange={(e)=>setDate(e.target.value)}
+                      required
+                      onChange={(e) => setDate(e.target.value)}
                       class="w-full px-4 py-3 border border-gray-300 rounded-lg text-base focus:outline-none focus:border-indigo-600 focus:ring-2 focus:ring-indigo-600/10"
                     />
                   </div>
@@ -157,13 +185,13 @@ const AddTransaction = ({
                 <div class="flex gap-4 pt-4">
                   <button
                     type="submit"
-                    class="flex-1 bg-gradient-to-r from-indigo-600 to-purple-600 text-white py-3 px-6 rounded-lg font-medium shadow hover:opacity-90 transition"
+                    class="flex-1  bg-gradient-to-r from-indigo-600 to-purple-600 text-white px-2 py-2 md:py-3 md:px-6 rounded-lg font-medium shadow hover:opacity-90 transition"
                   >
                     Save Transaction
                   </button>
                   <button
                     type="button"
-                    class="bg-white text-indigo-600 border border-indigo-600 py-3 px-6 rounded-lg font-medium hover:bg-indigo-50 transition"
+                    class="bg-white text-indigo-600 border border-indigo-600 px-2 py-2 md:py-3 md:px-6 rounded-lg font-medium hover:bg-indigo-50 transition"
                   >
                     Cancel
                   </button>

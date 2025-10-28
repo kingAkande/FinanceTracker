@@ -10,11 +10,11 @@ const Header = () => {
     //   </div>
     // </div>
     <div className="bg-gradient-to-r from-indigo-600 to-violet-600 text-white px-8 py-5 flex justify-between items-center">
-      <div className="text-xl font-bold">💰 FinanceTracker</div>
+      <div className="text-xl font-bold flex">💰Finance<span className="hidden md:block">Tracker</span> </div>
       <div className="flex items-center gap-3">
-        <span>John Doe</span>
+        <span className="hidden md:block" >Sulaimon Akande</span>
         <div className="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center">
-          JD
+          S A
         </div>
       </div>
     </div>

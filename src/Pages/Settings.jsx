@@ -4,7 +4,7 @@ import Header from "./Header";
 const Settings = () => {
   return (
     <div>
-      <div className="bg-white rounded-[20px] shadow-[0_20px_40px_rgba(0,0,0,0.1)] overflow-hidden mx-auto max-w-[900px] border-8 border-slate-800">
+      <div className="bg-white rounded-[20px] shadow-[0_20px_40px_rgba(0,0,0,0.1)] overflow-hidden mx-auto w-[350px] md:w-[689px] lg:w-[900px] border-6 border-violet-400">
         <Header />
         <PageNav />
         <div class="flex-1 p-6 bg-gray-50">

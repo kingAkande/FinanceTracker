@@ -1,5 +1,5 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import { use, useState } from "react";
+import {  useState } from "react";
 import Header from "./Pages/Header";
 import Dashboard from "./Pages/Dashboard";
 import Pgnotfound from "./Pages/Pgnotfound";
@@ -13,13 +13,28 @@ import Reports from "./Pages/Reports";
 import Home from "./Pages/Home";
 
 function App() {
-  const [amount, setAmount] = useState("");
-  const [description, setDiscription] = useState("");
-  const [category, setCategory] = useState("");
-  const [notes, setNotes] = useState("");
+  const[amount, setAmount] = useState("");
+  const[description, setDiscription] = useState("");
+  const[category, setCategory] = useState("");
+  const[notes, setNotes] = useState("");
   const[date , setDate] = useState("");
   const[transactions , setTransactions] = useState([]);  
-  
+  const[editingIndex , setEditingIndex] = useState(null);
+  const[isEditing , setIsEditing]= useState(false);
+
+
+  function edit(index){
+    const itemToEdit = transactions[index];
+
+    setAmount(itemToEdit.amount);
+    setDiscription(itemToEdit.description);
+    setCategory(itemToEdit.category);
+    setNotes(itemToEdit.notes);
+    setDate(itemToEdit.date);
+
+    setIsEditing(true);
+    setEditingIndex(index);
+  }
 
   return (
     <div>
@@ -28,12 +43,12 @@ function App() {
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<Home />} />
-          <Route path="dashboard" element={<Dashboard />} />
+          <Route path="dashboard" element={<Dashboard newTRansaction={transactions} />} />
           {/* <Route path="header" element={<Header/>} /> */}
           <Route path="login" element={<Login />} />
           <Route
             path="transaction"
-            element={<Transaction newTRansaction={transactions}  />}
+            element={<Transaction isEditing={isEditing} editingIndex={editingIndex} newTRansaction={transactions} onsetTx={setTransactions} onEdit={edit} />}
           />
           <Route
             path="addTransaction"
@@ -50,6 +65,10 @@ function App() {
                 category={category}
                 notes={notes}
                 date={date}
+                isEditing={isEditing}
+                editingIndex={editingIndex}
+                setEditingIndex={setEditingIndex}
+                setIsEditing={setIsEditing}
               />
             }
           />
