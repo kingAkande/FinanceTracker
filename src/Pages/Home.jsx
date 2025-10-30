@@ -5,6 +5,8 @@ import Dashboard from "./Dashboard";
 import Transaction from "./Transaction";
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
+import {useNavigate } from "react-router-dom";
+
 
 const Home = () => {
   const [remember, setRemember] = useState(false);
@@ -13,9 +15,12 @@ const Home = () => {
   const [isSigningIn , setIsSigningIn] = useState(false);
   const [errorMessage , setErrorMessage] = useState("");
 
+  const navigate = useNavigate();
 
  const onSubmit = async(e)=>{
   e.preventDefault();
+
+  navigate("/dashboard")
  }
 
   return (
@@ -60,6 +65,7 @@ const Home = () => {
                   id="email-desktop"
                   type="email"
                   placeholder="sulaimon@example.com"
+                  required
                   className="w-full border-2 border-slate-200 rounded-lg px-4 py-3 text-base focus:border-indigo-600 focus:ring-2 focus:ring-indigo-100 outline-none transition-all placeholder:text-gray-400"
                 />
               </div>
@@ -72,6 +78,7 @@ const Home = () => {
                   Password
                 </label>
                 <input
+                  required
                   value={password}
                   onChange={(e)=>setPassword(e.target.value)}
                   id="password-desktop"
@@ -105,14 +112,13 @@ const Home = () => {
                   Forgot password?
                 </a>
               </div>
-              <Link to="dashboard">
+              
               <button
                 type="submit"
                 className="w-full bg-gradient-to-tr from-indigo-600 to-purple-600 text-white rounded-lg py-3 font-semibold hover:-translate-y-0.5 hover:shadow-lg transition-all"
                 >
                 Sign In
               </button>
-                </Link>
             </form>
 
             <div className="flex items-center text-gray-400 my-6 text-sm">
