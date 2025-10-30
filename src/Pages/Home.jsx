@@ -126,10 +126,10 @@ const Home = () => {
                 <div className="w-4 h-4 bg-[#ea4335] rounded" />
                 Google
               </button>
-              <button className="flex items-center justify-center gap-2 border-2 border-gray-200 rounded-lg py-3 bg-white font-medium hover:bg-gray-50 transition-all">
+              {/* <button className="flex items-center justify-center gap-2 border-2 border-gray-200 rounded-lg py-3 bg-white font-medium hover:bg-gray-50 transition-all">
                 <div className="w-4 h-4 bg-black rounded" />
                 Apple
-              </button>
+              </button> */}
             </div>
 
             <p className="text-center text-gray-500 text-sm">
