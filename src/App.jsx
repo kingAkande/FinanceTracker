@@ -3,14 +3,15 @@ import {  useState } from "react";
 import Header from "./Pages/Header";
 import Dashboard from "./Pages/Dashboard";
 import Pgnotfound from "./Pages/Pgnotfound";
-import Login from "./Pages/Login";
-import PageNav from "./Components/PageNav";
+// import Login from "./Pages/Login";
+// import PageNav from "./Components/PageNav";
 import Transaction from "./Pages/Transaction";
 import AddTransaction from "./Pages/AddTransaction";
 import Budgets from "./Pages/Budgets";
 import Settings from "./Pages/Settings";
 import Reports from "./Pages/Reports";
 import Home from "./Pages/Home";
+import SignUp from "./Pages/SignUp";
 
 function App() {
   const[amount, setAmount] = useState("");
@@ -45,7 +46,6 @@ function App() {
           <Route path="/" element={<Home />} />
           <Route path="dashboard" element={<Dashboard newTRansaction={transactions} />} />
           {/* <Route path="header" element={<Header/>} /> */}
-          <Route path="login" element={<Login />} />
           <Route
             path="transaction"
             element={<Transaction isEditing={isEditing} editingIndex={editingIndex} newTRansaction={transactions} onsetTx={setTransactions} onEdit={edit} />}
@@ -76,6 +76,7 @@ function App() {
           <Route path="budget" element={<Budgets />} />
           <Route path="settings" element={<Settings />} />
           <Route path="*" element={<Pgnotfound />} />
+          <Route path="signup" element={<SignUp/>}/>
         </Routes>
       </BrowserRouter>
     </div>

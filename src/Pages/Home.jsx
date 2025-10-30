@@ -4,16 +4,25 @@ import Header from "./Header";
 import Dashboard from "./Dashboard";
 import Transaction from "./Transaction";
 import React, { useState } from "react";
+import { Link } from "react-router-dom";
 
 const Home = () => {
   const [remember, setRemember] = useState(false);
+  const [email , setEmail] = useState("");
+  const [password , setPassword] = useState("");
+  const [isSigningIn , setIsSigningIn] = useState(false);
+  const [errorMessage , setErrorMessage] = useState("");
 
+
+ const onSubmit = async(e)=>{
+  e.preventDefault();
+ }
 
   return (
     <div>
     
       {/* Device Section */}
-      <div className="bg-white border-6  border-violet-400 rounded-2xl shadow-[0_25px_50px_rgba(0,0,0,0.25)] overflow-hidden w-[350px] md:w-[689px] lg:w-[900px] mx-auto min-h-screen">
+      <div className="bg-white border-6 border-violet-400 rounded-2xl shadow-[0_25px_50px_rgba(0,0,0,0.25)] overflow-hidden w-[350px] md:w-[689px] lg:w-[900px] mx-auto min-h-screen">
         <div className="flex flex-col h-full">
           {/* Header */}
           <div className="relative text-center bg-gradient-to-br from-indigo-600 to-purple-600 text-white p-10 overflow-hidden">
@@ -37,7 +46,7 @@ const Home = () => {
               </p>
             </div>
 
-            <form className="space-y-5">
+            <form onSubmit={onSubmit} className="space-y-5">
               <div>
                 <label
                   htmlFor="email-desktop"
@@ -46,6 +55,8 @@ const Home = () => {
                   Email Address
                 </label>
                 <input
+                  value={email}
+                  onChange={(e)=>setEmail(e.target.value)}
                   id="email-desktop"
                   type="email"
                   placeholder="sulaimon@example.com"
@@ -61,6 +72,8 @@ const Home = () => {
                   Password
                 </label>
                 <input
+                  value={password}
+                  onChange={(e)=>setPassword(e.target.value)}
                   id="password-desktop"
                   type="password"
                   placeholder="Enter your password"
@@ -86,19 +99,20 @@ const Home = () => {
                 </div>
 
                 <a
-                  href="#"
+                  href=""
                   className="text-indigo-600 font-medium hover:underline"
                 >
                   Forgot password?
                 </a>
               </div>
-
+              <Link to="dashboard">
               <button
                 type="submit"
                 className="w-full bg-gradient-to-tr from-indigo-600 to-purple-600 text-white rounded-lg py-3 font-semibold hover:-translate-y-0.5 hover:shadow-lg transition-all"
-              >
+                >
                 Sign In
               </button>
+                </Link>
             </form>
 
             <div className="flex items-center text-gray-400 my-6 text-sm">
@@ -120,9 +134,9 @@ const Home = () => {
 
             <p className="text-center text-gray-500 text-sm">
               Don't have an account?{" "}
-              <a href="" className="text-indigo-600 font-semibold hover:underline">
+              <Link to="signup" className="text-indigo-600 font-semibold hover:underline">
                 Create one
-              </a>
+              </Link>
             </p>
           </div>
         </div>
