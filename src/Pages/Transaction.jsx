@@ -22,7 +22,7 @@ const Transaction = ({ newTRansaction , onsetTx  ,onEdit  }) => {
             <div className="bg-white rounded-xl shadow-[0_4px_16px_rgba(0,0,0,0.1)] mb-8 overflow-hidden">
               {/* <!-- Header --> */}
               <div className="grid grid-cols-3 gap-4 px-4 py-4 md:px-8 md:py-5 border-b border-slate-200 md:flex justify-between items-center bg-[#fafbfc]">
-                <h3 className="text-sm md:text-lg font-semibold flex"> <span className="hidden md:block">All {}</span>Transactions</h3>
+                <h3 className="text-sm md:text-lg font-semibold flex"> <span className="hidden md:block">All&nbsp;</span>Transactions</h3>
                 <div className="flex gap-2">
                   <button className="text-sm md:text-lg flex gap-2   px-2 py-2 md:px-4  items-center rounded-lg font-medium border border-indigo-600 text-indigo-600 bg-white transition hover:bg-indigo-50">
                     <Download className=" h-4 md:h-6 " />
