@@ -124,12 +124,14 @@ const Settings = () => {
                     Download data (CSV/JSON)  
                   </div>
                 </div>
-                <div class="flex gap-2">
-                  <button class="px-4 py-2 bg-gray-100 rounded-md border text-sm border-indigo-600  text-indigo-600 bg-white transition hover:bg-indigo-50">
-                    Export CSV
+                <div class="flex gap-2 ">
+                  <button class="px-2 py-1 md:px-4 md:py-2 flex bg-gray-100 rounded-md border text-sm border-indigo-600  text-indigo-600 transition hover:bg-indigo-50">
+                   <span className="hidden md:block"> Export</span> &nbsp;CSV
+                
                   </button>
-                  <button class="px-4 py-2 bg-gray-100 rounded-md border text-sm border-indigo-600 text-indigo-600 bg-white transition hover:bg-indigo-50">
-                    Export JSON
+                  <button class="px-2 py-1 md:px-4 md:py-2 flex bg-gray-100 rounded-md border text-sm border-indigo-600 text-indigo-600  transition hover:bg-indigo-50">
+                   <span className="hidden md:block"> Export</span> &nbsp;JSON
+                    
                   </button>
                 </div>
               </div>
@@ -173,8 +175,8 @@ const Settings = () => {
                     Edit name & email
                   </div>
                 </div>
-                <button class="px-4 py-2 bg-gray-100 rounded-md  border text-sm border-indigo-600  text-indigo-600 bg-white transition hover:bg-indigo-50">
-                  Edit Profile
+                <button class="px-4 py-2 flex bg-gray-100 rounded-md  border text-sm border-indigo-600  text-indigo-600  transition hover:bg-indigo-50">
+                  Edit<span className="hidden md:block"> &nbsp;profile</span>
                 </button>
               </div>
               <div class="flex items-center justify-between">
@@ -184,8 +186,8 @@ const Settings = () => {
                     Change password
                   </div>
                 </div>
-                <button class="px-4 py-2 bg-gray-100 rounded-md  border text-sm border-indigo-600  text-indigo-600 bg-white transition hover:bg-indigo-50">
-                  Change Password
+                <button class="px-4 py-2 flex  rounded-md  border text-sm border-indigo-600  text-indigo-600 bg-white transition hover:bg-indigo-50">
+                  Change <span className="hidden md:block"> &nbsp;password</span>
                 </button>
               </div>
             </div>
