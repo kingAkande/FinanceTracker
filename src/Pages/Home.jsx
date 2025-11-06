@@ -1,31 +1,71 @@
-// import React from "react";
-import PageNav from "../Components/PageNav";
-import Header from "./Header";
-import Dashboard from "./Dashboard";
-import Transaction from "./Transaction";
-import React, { useState } from "react";
-import { Link } from "react-router-dom";
-import {useNavigate } from "react-router-dom";
 
+import React, { useState } from "react";
+import { Link, useNavigate, Navigate } from "react-router-dom";
+import { useAuth } from "../Context/authContext";
+import googleLogo from "./../assets/google-icon-logo-svgrepo-com.svg";
+
+// ❌ WRONG: You were using create user function for sign in
+// import { doCreateUserWithEmailAndPassword } from '../Firebase/auth'
+// ✅ CORRECT: Import the sign-in function
+import { doSignInWithEmailAndPassword, doSignInWithGoogle } from "../Firebase/auth";
 
 const Home = () => {
-  const [remember, setRemember] = useState(false);
-  const [email , setEmail] = useState("");
-  const [password , setPassword] = useState("");
-  const [isSigningIn , setIsSigningIn] = useState(false);
-  const [errorMessage , setErrorMessage] = useState("");
-
   const navigate = useNavigate();
 
- const onSubmit = async(e)=>{
-  e.preventDefault();
+  const [remember, setRemember] = useState(false);
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  // ❌ WRONG: These are not needed for login page
+  // const [confirmPassword, setconfirmPassword] = useState('')
+  const [isSigningIn, setIsSigningIn] = useState(false); // ✅ Better naming
+  const [isgoogleSignIn , setIsGoogleSignIn] = useState(false)
+  const [errorMessage, setErrorMessage] = useState("");
 
-  navigate("/dashboard")
- }
+  const { userLoggedIn } = useAuth();
+
+  // ✅ CORRECT: Sign in function (not create user)
+  const onSubmit = async (e) => {
+    e.preventDefault();
+
+    if (!isSigningIn) {
+      setIsSigningIn(true);
+      setErrorMessage(""); // Clear previous errors
+
+      try {
+        // ✅ Use sign-in function, not create user
+        await doSignInWithEmailAndPassword(email, password);
+        //  navigate("/dashboard");
+      } catch (error) {
+        // ✅ Handle errors properly
+        setErrorMessage(error.message || "Failed to sign in");
+        setIsSigningIn(false);
+      }
+    }
+  };
+
+  // ✅ CORRECT: Google sign in with proper error handling
+  const onisGoogleSignIn = async (e) => {
+    e.preventDefault();
+
+    if (!isgoogleSignIn) {
+      setIsGoogleSignIn(true);
+      setErrorMessage("");
+
+      try {
+        await doSignInWithGoogle();
+        navigate("/dashboard");
+      } catch (error) {
+        setErrorMessage(error.message || "Failed to sign in with Google");
+        setIsGoogleSignIn(false);
+      }
+    }
+  };
 
   return (
     <div>
-    
+      {/* ✅ CORRECT: Redirect if already logged in */}
+      {userLoggedIn && <Navigate to={"/dashboard"} replace={true} />}
+
       {/* Device Section */}
       <div className="bg-white border-6 border-violet-400 rounded-2xl shadow-[0_25px_50px_rgba(0,0,0,0.25)] overflow-hidden w-[350px] md:w-[689px] lg:w-[900px] mx-auto min-h-screen">
         <div className="flex flex-col h-full">
@@ -51,6 +91,13 @@ const Home = () => {
               </p>
             </div>
 
+            {/* ✅ ADDED: Error message display */}
+            {errorMessage && (
+              <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg mb-4 text-sm">
+                {errorMessage}
+              </div>
+            )}
+
             <form onSubmit={onSubmit} className="space-y-5">
               <div>
                 <label
@@ -61,12 +108,13 @@ const Home = () => {
                 </label>
                 <input
                   value={email}
-                  onChange={(e)=>setEmail(e.target.value)}
+                  onChange={(e) => setEmail(e.target.value)}
                   id="email-desktop"
                   type="email"
-                  placeholder="sulaimon@example.com"
+                  placeholder="Email"
                   required
-                  className="w-full border-2 border-slate-200 rounded-lg px-4 py-3 text-base focus:border-indigo-600 focus:ring-2 focus:ring-indigo-100 outline-none transition-all placeholder:text-gray-400"
+                  disabled={isSigningIn} // ✅ Disable during sign in
+                  className="w-full border-2 border-slate-200 rounded-lg px-4 py-3 text-base focus:border-indigo-600 focus:ring-2 focus:ring-indigo-100 outline-none transition-all placeholder:text-gray-400 disabled:bg-gray-100 disabled:cursor-not-allowed"
                 />
               </div>
 
@@ -80,11 +128,12 @@ const Home = () => {
                 <input
                   required
                   value={password}
-                  onChange={(e)=>setPassword(e.target.value)}
+                  onChange={(e) => setPassword(e.target.value)}
                   id="password-desktop"
                   type="password"
                   placeholder="Enter your password"
-                  className="w-full border-2 border-slate-200 rounded-lg px-4 py-3 text-base focus:border-indigo-600 focus:ring-2 focus:ring-indigo-100 outline-none transition-all placeholder:text-gray-400"
+                  disabled={isSigningIn}
+                  className="w-full border-2 border-slate-200 rounded-lg px-4 py-3 text-base focus:border-indigo-600 focus:ring-2 focus:ring-indigo-100 outline-none transition-all placeholder:text-gray-400 disabled:bg-gray-100 disabled:cursor-not-allowed"
                 />
               </div>
 
@@ -105,19 +154,21 @@ const Home = () => {
                   <label className="cursor-pointer">Remember me</label>
                 </div>
 
-                <a
-                  href=""
+                <Link
+                  to="/forgot-password"
                   className="text-indigo-600 font-medium hover:underline"
                 >
                   Forgot password?
-                </a>
+                </Link>
               </div>
-              
+
               <button
                 type="submit"
-                className="w-full bg-gradient-to-tr from-indigo-600 to-purple-600 text-white rounded-lg py-3 font-semibold hover:-translate-y-0.5 hover:shadow-lg transition-all"
-                >
-                Sign In
+                disabled={isSigningIn} // ✅ Disable during sign in
+                className="w-full bg-gradient-to-tr from-indigo-600 to-purple-600 text-white rounded-lg py-3 font-semibold hover:-translate-y-0.5 hover:shadow-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
+              >
+                {/* ✅ Show loading state */}
+                {isSigningIn ? "Signing In..." : "Sign In"}
               </button>
             </form>
 
@@ -127,20 +178,24 @@ const Home = () => {
               <div className="flex-1 h-px bg-gray-200" />
             </div>
 
-            <div className="grid grid-cols-2 gap-3 mb-6">
-              <button className="flex items-center justify-center gap-2 border-2 border-gray-200 rounded-lg py-3 bg-white font-medium hover:bg-gray-50 transition-all">
-                <div className="w-4 h-4 bg-[#ea4335] rounded" />
-                Google
-              </button>
-              <button className="flex items-center justify-center gap-2 border-2 border-gray-200 rounded-lg py-3 bg-white font-medium hover:bg-gray-50 transition-all">
-                <div className="w-4 h-4 bg-black rounded" />
-                Apple
+            <div className="grid grid-cols-1 gap-3 mb-6">
+              {/* ✅ FIXED: Connect Google button to handler */}
+              <button
+                onClick={onisGoogleSignIn}
+                disabled={isgoogleSignIn}
+                className="flex items-center justify-center gap-2 border-2 border-gray-200 rounded-lg py-3 bg-white font-medium hover:bg-gray-50 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                <img src={googleLogo} alt="Google Logo" className="w-6 h-6" />
+                {isgoogleSignIn ? "Signing In..." : "Google"}
               </button>
             </div>
 
             <p className="text-center text-gray-500 text-sm">
               Don't have an account?{" "}
-              <Link to="signup" className="text-indigo-600 font-semibold hover:underline">
+              <Link
+                to="/signup"
+                className="text-indigo-600 font-semibold hover:underline"
+              >
                 Create one
               </Link>
             </p>
@@ -157,7 +212,6 @@ const Home = () => {
           }
         `}
       </style>
-
     </div>
   );
 };

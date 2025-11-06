@@ -18,25 +18,7 @@ const PageNav = () => {
         <NavComponent name="Setting" linkTo="/settings"  />
       </div>
     </nav>
-    // <div class="bg-slate-100 py-5">
-    //   <div class="flex justify-center gap-4 flex-wrap">
-    //     <button class="bg-indigo-600 text-white px-6 py-3 rounded-full shadow font-medium transition">
-    //       Dashboard
-    //     </button>
-    //     <button class="bg-white px-6 py-3 rounded-full shadow font-medium transition hover:bg-indigo-50">
-    //       Transactions
-    //     </button>
-    //     <button class="bg-white px-6 py-3 rounded-full shadow font-medium transition hover:bg-indigo-50">
-    //       Reports
-    //     </button>
-    //     <button class="bg-white px-6 py-3 rounded-full shadow font-medium transition hover:bg-indigo-50">
-    //       Budget
-    //     </button>
-    //     <button class="bg-white px-6 py-3 rounded-full shadow font-medium transition hover:bg-indigo-50">
-    //       Settings
-    //     </button>
-    //   </div>
-    // </div>
+
   );
 };
 

@@ -5,15 +5,13 @@ import Header from "./Header";
 
 const Dashboard = ({ newTRansaction }) => {
 
-  const[txnMSG , setTxnMSG] = useState(" ")
 
-  const transactionMsg = "Recent Transaction"
 
 
 
   return (
     <div >
-      <div className="bg-white min-h-screen  rounded-[20px] shadow-[0_20px_40px_rgba(0,0,0,0.1)] overflow-hidden mx-auto w-[350px] md:w-[689px] lg:w-[900px] border-6 border-violet-400">
+      <div className="bg-white min-h-screen  rounded-[20px] shadow-[0_20px_40px_rgba(0,0,0,0.1)] overflow-hidden mx-auto w-[350px] md:w-[689px] lg:w-[900px] border-6  border-violet-400">
         <Header />
         <PageNav />
 

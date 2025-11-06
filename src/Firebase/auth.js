@@ -9,6 +9,7 @@ import {
   GoogleAuthProvider,
 } from "firebase/auth";
 
+// ✅ FIXED: Now returns the full userCredential so you can access user
 export const doCreateUserWithEmailAndPassword = async (email, password) => {
   return createUserWithEmailAndPassword(auth, email, password);
 };
@@ -20,10 +21,8 @@ export const doSignInWithEmailAndPassword = (email, password) => {
 export const doSignInWithGoogle = async () => {
   const provider = new GoogleAuthProvider();
   const result = await signInWithPopup(auth, provider);
-//   const user = result.user;
-
-  // add user to firestore
-  return result
+  // ✅ Google sign-in automatically provides photoURL and displayName
+  return result;
 };
 
 export const doSignOut = () => {
