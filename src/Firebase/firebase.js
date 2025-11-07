@@ -7,7 +7,7 @@ import { getFirestore } from "firebase/firestore";
 
 const firebaseConfig = {
   apiKey: "AIzaSyDTVmo5ns3voKLbf8W1GawXhmFycAsI4cY",
-  authDomain: "financetracker-fb7b7.firebaseapp.com",
+  authDomain: "finance-tracker-kohl-nu.vercel.app",
   projectId: "financetracker-fb7b7",
   storageBucket: "financetracker-fb7b7.firebasestorage.app",
   messagingSenderId: "734634470276",
