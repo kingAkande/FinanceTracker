@@ -1,13 +1,17 @@
-
 import React, { useState } from "react";
 import { Link, useNavigate, Navigate } from "react-router-dom";
 import { useAuth } from "../Context/authContext";
+import { EyeOff, Lock, Mail } from "lucide-react";
 import googleLogo from "./../assets/google-icon-logo-svgrepo-com.svg";
 
 // ❌ WRONG: You were using create user function for sign in
 // import { doCreateUserWithEmailAndPassword } from '../Firebase/auth'
 // ✅ CORRECT: Import the sign-in function
-import { doSignInWithEmailAndPassword, doSignInWithGoogle } from "../Firebase/auth";
+import {
+  doSignInWithEmailAndPassword,
+  doSignInWithGoogle,
+} from "../Firebase/auth";
+import { Eye } from "lucide-react";
 
 const Home = () => {
   const navigate = useNavigate();
@@ -18,8 +22,9 @@ const Home = () => {
   // ❌ WRONG: These are not needed for login page
   // const [confirmPassword, setconfirmPassword] = useState('')
   const [isSigningIn, setIsSigningIn] = useState(false); // ✅ Better naming
-  const [isgoogleSignIn , setIsGoogleSignIn] = useState(false)
+  const [isgoogleSignIn, setIsGoogleSignIn] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
 
   const { userLoggedIn } = useAuth();
 
@@ -99,7 +104,7 @@ const Home = () => {
             )}
 
             <form onSubmit={onSubmit} className="space-y-5">
-              <div>
+              {/* <div>
                 <label
                   htmlFor="email-desktop"
                   className="block mb-2 font-medium text-slate-700 text-sm"
@@ -111,19 +116,41 @@ const Home = () => {
                   onChange={(e) => setEmail(e.target.value)}
                   id="email-desktop"
                   type="email"
-                  placeholder="Email"
+                  placeholder=" "
                   required
                   disabled={isSigningIn} // ✅ Disable during sign in
                   className="w-full border-2 border-slate-200 rounded-lg px-4 py-3 text-base focus:border-indigo-600 focus:ring-2 focus:ring-indigo-100 outline-none transition-all placeholder:text-gray-400 disabled:bg-gray-100 disabled:cursor-not-allowed"
                 />
-              </div>
+              </div> */}
 
               <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Email
+                </label>
+                <div className="relative">
+                  <Mail
+                    className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"
+                    size={20}
+                  />
+                  <input
+                    type="email"
+                    Email
+                    required
+                    className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                    placeholder="Email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    disabled={isSigningIn} // ✅ Disable during sign in
+                  />
+                </div>
+              </div>
+
+              {/* <div>
                 <label
                   htmlFor="password-desktop"
                   className="block mb-2 font-medium text-slate-700 text-sm"
                 >
-                  Password
+                  Password 
                 </label>
                 <input
                   required
@@ -135,6 +162,34 @@ const Home = () => {
                   disabled={isSigningIn}
                   className="w-full border-2 border-slate-200 rounded-lg px-4 py-3 text-base focus:border-indigo-600 focus:ring-2 focus:ring-indigo-100 outline-none transition-all placeholder:text-gray-400 disabled:bg-gray-100 disabled:cursor-not-allowed"
                 />
+              </div> */}
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Password
+                </label>
+                <div className="relative">
+                  <Lock
+                    className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"
+                    size={20}
+                  />
+                  <input
+                    type={showPassword ? "text" : "password"}
+                    required
+                    className="w-full pl-10 pr-12 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                    placeholder="••••••••"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    disabled={isSigningIn}
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword(!showPassword)}
+                    className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                  >
+                    {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+                  </button>
+                </div>
               </div>
 
               <div className="flex justify-end text-sm mb-5">

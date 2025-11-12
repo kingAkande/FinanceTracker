@@ -339,11 +339,13 @@
 import React, { useState } from "react";
 import { Link, useNavigate, Navigate } from "react-router-dom";
 import { useAuth } from "../Context/authContext";
+import { Eye, EyeOff, Lock, Mail } from "lucide-react";
+
 import {
   doCreateUserWithEmailAndPassword,
   doSignInWithGoogle,
 } from "../Firebase/auth";
-import { updateProfile,  getAuth } from "firebase/auth";
+import { updateProfile, getAuth } from "firebase/auth";
 // ❌ WRONG: Don't import auth here, it's already in your auth.js
 // import { auth } from "../Firebase/firebase";
 import googleLogo from "./../assets/google-icon-logo-svgrepo-com.svg";
@@ -357,6 +359,7 @@ const SignUp = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
 
   // ✅ UI state
   const [isRegistering, setIsRegistering] = useState(false);
@@ -440,7 +443,7 @@ const SignUp = () => {
         // ---- NEW: tell the context to refresh the user object ----
         // await refreshUser?.();
         const freshUser = userCredential.user;
-        await refreshUser?.(freshUser); 
+        await refreshUser?.(freshUser);
 
         // // ✅ Small delay to ensure context updates
         // setTimeout(() => {
@@ -554,33 +557,53 @@ const SignUp = () => {
               </div>
 
               <div className="mb-5">
-                <label className="block mb-2 font-medium text-slate-700 text-sm">
-                  Email Address
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Email
                 </label>
-                <input
-                  type="email"
-                  placeholder="Email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  required
-                  disabled={isRegistering}
-                  className="w-full border-2 border-slate-200 rounded-lg py-3 px-4 transition-all focus:outline-none focus:border-indigo-600 focus:ring-4 focus:ring-indigo-600/10 placeholder:text-slate-400 disabled:bg-slate-100 disabled:cursor-not-allowed"
-                />
+                <div className="relative">
+                  <Mail
+                    className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"
+                    size={20}
+                  />
+                  <input
+                    type="email"
+                    Email
+                    required
+                    className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                    placeholder="Email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                  />
+                </div>
               </div>
 
               <div className="mb-5">
-                <label className="block mb-2 font-medium text-slate-700 text-sm">
-                  Password
-                </label>
-                <input
-                  type="password"
-                  placeholder="Create a strong password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  required
-                  disabled={isRegistering}
-                  className="w-full border-2 border-slate-200 rounded-lg py-3 px-4 transition-all focus:outline-none focus:border-indigo-600 focus:ring-4 focus:ring-indigo-600/10 placeholder:text-slate-400 disabled:bg-slate-100 disabled:cursor-not-allowed"
-                />
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Password
+                  </label>
+                  <div className="relative">
+                    <Lock
+                      className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"
+                      size={20}
+                    />
+                    <input
+                      type={showPassword ? "text" : "password"}
+                      required
+                      className="w-full pl-10 pr-12 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                      placeholder="••••••••"
+                      value={password}
+                      onChange={(e) => setPassword(e.target.value)}
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setShowPassword(!showPassword)}
+                      className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                    >
+                      {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+                    </button>
+                  </div>
+                </div>
                 {/* ✅ Dynamic password strength indicator */}
                 <div className="mt-2 h-1 bg-slate-200 rounded">
                   <div
@@ -590,7 +613,9 @@ const SignUp = () => {
                 </div>
               </div>
 
+              {/* 
               <div className="mb-5">
+                
                 <label className="block mb-2 font-medium text-slate-700 text-sm">
                   Confirm Password
                 </label>
@@ -603,6 +628,31 @@ const SignUp = () => {
                   disabled={isRegistering}
                   className="w-full border-2 border-slate-200 rounded-lg py-3 px-4 transition-all focus:outline-none focus:border-indigo-600 focus:ring-4 focus:ring-indigo-600/10 placeholder:text-slate-400 disabled:bg-slate-100 disabled:cursor-not-allowed"
                 />
+              </div> */}
+
+
+                 <div className="mb-5">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                   Confirm Password
+                  </label>
+                  <div className="relative">
+                    <Lock
+                      className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"
+                      size={20}
+                    />
+                    <input
+                      type={showPassword ? "text" : "password"}
+                      required
+                      className="w-full pl-10 pr-12 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                      placeholder="••••••••"
+                      value={password}
+                      onChange={(e) => setPassword(e.target.value)}
+                    />
+                   
+                  </div>
+                </div>
+           
               </div>
 
               <button
