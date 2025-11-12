@@ -109,23 +109,7 @@ const Transaction = ({ newTRansaction , onsetTx  ,onEdit  }) => {
                   </div>
                 ))}
 
-                {/* <Recentranction
-                  category={`Salary`}
-                  date={`Today`}
-                  description={`Payroll`}
-                  ammount={`+$2,500`}
-                >
-                  {" "}
-                  <div className="text-xs text-slate-500">
-                    <button className="text-indigo-600 cursor-pointer">
-                      Edit
-                    </button>{" "}
-                    |
-                    <button className="text-red-600 cursor-pointer">
-                      Delete
-                    </button>
-                  </div>
-                </Recentranction> */}
+        
 
                 {/* <!-- Transaction Item (Expense) --> */}
                 <div className="flex justify-between items-center py-4 border-b border-slate-100">

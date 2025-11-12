@@ -83,12 +83,12 @@ const ForgotPassword = () => {
         </form>
 
         <div className="mt-6 text-center text-sm text-slate-600">
-          Remembered your password?{" "}
+        
           <Link
             to="/"
             className="text-indigo-600 font-semibold hover:underline"
           >
-            Sign in
+            Back to Login
           </Link>
         </div>
       </div>

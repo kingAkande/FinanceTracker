@@ -62,12 +62,12 @@ const Home = () => {
   };
 
   return (
-    <div>
+    <div className="flex items-center justify-center min-h-screen">
       {/* ✅ CORRECT: Redirect if already logged in */}
       {userLoggedIn && <Navigate to={"/dashboard"} replace={true} />}
 
       {/* Device Section */}
-      <div className="bg-white border-6 border-violet-400 rounded-2xl shadow-[0_25px_50px_rgba(0,0,0,0.25)] overflow-hidden w-[350px] md:w-[689px] lg:w-[900px] mx-auto min-h-screen">
+      <div className="bg-white  rounded-2xl shadow-[0_25px_50px_rgba(0,0,0,0.25)] overflow-hidden w-[350px] md:w-[689px]  mx-auto ">
         <div className="flex flex-col h-full">
           {/* Header */}
           <div className="relative text-center bg-gradient-to-br from-indigo-600 to-purple-600 text-white p-10 overflow-hidden">
@@ -137,8 +137,8 @@ const Home = () => {
                 />
               </div>
 
-              <div className="flex items-center justify-between text-sm mb-5">
-                <div
+              <div className="flex justify-end text-sm mb-5">
+                {/* <div
                   className="flex items-center gap-2 cursor-pointer select-none"
                   onClick={() => setRemember(!remember)}
                 >
@@ -152,7 +152,7 @@ const Home = () => {
                     {remember && "✓"}
                   </div>
                   <label className="cursor-pointer">Remember me</label>
-                </div>
+                </div> */}
 
                 <Link
                   to="/forgot-password"
@@ -172,22 +172,22 @@ const Home = () => {
               </button>
             </form>
 
-            <div className="flex items-center text-gray-400 my-6 text-sm">
+            {/* <div className="flex items-center text-gray-400 my-6 text-sm">
               <div className="flex-1 h-px bg-gray-200" />
               <span className="mx-3">or continue with</span>
               <div className="flex-1 h-px bg-gray-200" />
-            </div>
+            </div> */}
 
             <div className="grid grid-cols-1 gap-3 mb-6">
               {/* ✅ FIXED: Connect Google button to handler */}
-              <button
+              {/* <button
                 onClick={onisGoogleSignIn}
                 disabled={isgoogleSignIn}
                 className="flex items-center justify-center gap-2 border-2 border-gray-200 rounded-lg py-3 bg-white font-medium hover:bg-gray-50 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 <img src={googleLogo} alt="Google Logo" className="w-6 h-6" />
                 {isgoogleSignIn ? "Signing In..." : "Google"}
-              </button>
+              </button> */}
             </div>
 
             <p className="text-center text-gray-500 text-sm">
@@ -196,7 +196,7 @@ const Home = () => {
                 to="/signup"
                 className="text-indigo-600 font-semibold hover:underline"
               >
-                Create one
+                Sign Up
               </Link>
             </p>
           </div>

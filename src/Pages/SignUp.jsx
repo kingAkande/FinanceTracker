@@ -486,11 +486,11 @@ const SignUp = () => {
   };
 
   return (
-    <div className="">
+    <div className="flex items-center justify-center  min-h-screen">
       {/* ✅ Redirect if already logged in */}
       {userLoggedIn && <Navigate to={"/dashboard"} replace={true} />}
 
-      <div className="bg-white border-violet-400 rounded-2xl shadow-[0_25px_50px_rgba(0,0,0,0.25)] border-[8px] overflow-hidden mx-auto transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_30px_60px_rgba(0,0,0,0.3)] w-[350px] md:w-[689px] lg:w-[900px] min-h-screen">
+      <div className="bg-white border-violet-400 rounded-2xl shadow-[0_25px_50px_rgba(0,0,0,0.25)]  overflow-hidden mx-auto transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_30px_60px_rgba(0,0,0,0.3)] w-[350px] md:w-[689px] lg:w-[900px] ">
         <div className="flex flex-col h-full">
           {/* Header */}
           <div className="relative bg-gradient-to-br from-indigo-600 to-violet-600 text-white text-center p-10 overflow-hidden">
@@ -614,13 +614,13 @@ const SignUp = () => {
               </button>
             </form>
 
-            <div className="flex items-center my-5 text-slate-400 text-sm">
+            {/* <div className="flex items-center my-5 text-slate-400 text-sm">
               <div className="flex-1 h-px bg-slate-200"></div>
               <span className="mx-3">or sign up with</span>
               <div className="flex-1 h-px bg-slate-200"></div>
-            </div>
+            </div> */}
 
-            <div className="grid grid-cols-1 gap-3 mb-6">
+            {/* <div className="grid grid-cols-1 gap-3 mb-6">
               <button
                 onClick={onGoogleSignIn}
                 disabled={isgoogleSignIn}
@@ -629,7 +629,7 @@ const SignUp = () => {
                 <img src={googleLogo} alt="Google Logo" className="w-6 h-6" />
                 <span>{isgoogleSignIn ? "Signing Up..." : "Google"}</span>
               </button>
-            </div>
+            </div> */}
 
             <div className="text-center text-slate-500 text-sm">
               Already have an account?{" "}
