@@ -43,6 +43,7 @@ const Home = () => {
       } catch (error) {
         // ✅ Handle errors properly
         setErrorMessage(error.message || "Failed to sign in");
+        setTimeout(() => setErrorMessage(""), 2000);
         setIsSigningIn(false);
       }
     }
