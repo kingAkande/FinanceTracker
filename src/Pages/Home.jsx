@@ -137,7 +137,7 @@ const Home = () => {
                     type="email"
                     Email
                     required
-                    className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                    className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none  "
                     placeholder="Email"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
@@ -177,7 +177,7 @@ const Home = () => {
                   <input
                     type={showPassword ? "text" : "password"}
                     required
-                    className="w-full pl-10 pr-12 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                    className="w-full pl-10 pr-12 py-3 border border-gray-300 rounded-lg focus:outline-none "
                     placeholder="••••••••"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}

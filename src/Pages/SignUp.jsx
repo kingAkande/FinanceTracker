@@ -537,7 +537,7 @@ const SignUp = () => {
                     onChange={(e) => setFirstName(e.target.value)}
                     required
                     disabled={isRegistering}
-                    className="w-full border-2 border-slate-200 rounded-lg py-3 px-4 transition-all focus:outline-none focus:border-indigo-600 focus:ring-4 focus:ring-indigo-600/10 placeholder:text-slate-400 disabled:bg-slate-100 disabled:cursor-not-allowed"
+                    className="w-full border border-slate-200 rounded-lg py-3 px-4 transition-all focus:outline-none focus:border-indigo-600 focus:ring-4 focus:ring-indigo-600/10 placeholder:text-slate-400 disabled:bg-slate-100 disabled:cursor-not-allowed"
                   />
                 </div>
                 <div>
@@ -551,7 +551,7 @@ const SignUp = () => {
                     onChange={(e) => setLastName(e.target.value)}
                     required
                     disabled={isRegistering}
-                    className="w-full border-2 border-slate-200 rounded-lg py-3 px-4 transition-all focus:outline-none focus:border-indigo-600 focus:ring-4 focus:ring-indigo-600/10 placeholder:text-slate-400 disabled:bg-slate-100 disabled:cursor-not-allowed"
+                    className="w-full border border-slate-200 rounded-lg py-3 px-4 transition-all focus:outline-none focus:border-indigo-600 focus:ring-4 focus:ring-indigo-600/10 placeholder:text-slate-400 disabled:bg-slate-100 disabled:cursor-not-allowed"
                   />
                 </div>
               </div>
@@ -569,7 +569,7 @@ const SignUp = () => {
                     type="email"
                     Email
                     required
-                    className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                    className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none  focus:border-indigo-600 focus:ring-4 focus:ring-indigo-600/10 placeholder:text-slate-400 disabled:bg-slate-100 disabled:cursor-not-allowed "
                     placeholder="Email"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
@@ -590,7 +590,7 @@ const SignUp = () => {
                     <input
                       type={showPassword ? "text" : "password"}
                       required
-                      className="w-full pl-10 pr-12 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                      className="w-full pl-10 pr-12 py-3 border border-gray-300 rounded-lg focus:outline-none  focus:border-indigo-600 focus:ring-4 focus:ring-indigo-600/10 placeholder:text-slate-400 disabled:bg-slate-100 disabled:cursor-not-allowed "
                       placeholder="••••••••"
                       value={password}
                       onChange={(e) => setPassword(e.target.value)}
@@ -643,7 +643,7 @@ const SignUp = () => {
                     <input
                       type={showPassword ? "text" : "password"}
                       required
-                      className="w-full pl-10 pr-12 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                      className="w-full pl-10 pr-12 py-3 border border-gray-300 rounded-lg focus:outline-none  focus:border-indigo-600 focus:ring-4 focus:ring-indigo-600/10 placeholder:text-slate-400 disabled:bg-slate-100 disabled:cursor-not-allowed"
                       placeholder="••••••••"
                       value={confirmPassword}
                       onChange={(e) => setConfirmPassword(e.target.value)}
