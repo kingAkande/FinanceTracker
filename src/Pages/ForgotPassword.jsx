@@ -33,6 +33,7 @@ const ForgotPassword = () => {
       }
     } finally {
       setIsSending(false);
+      setEmail("")
     }
   };
 
