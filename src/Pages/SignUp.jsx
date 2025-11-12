@@ -630,11 +630,10 @@ const SignUp = () => {
                 />
               </div> */}
 
-
-                 <div className="mb-5">
+              <div className="mb-5">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
-                   Confirm Password
+                    Confirm Password
                   </label>
                   <div className="relative">
                     <Lock
@@ -646,13 +645,11 @@ const SignUp = () => {
                       required
                       className="w-full pl-10 pr-12 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
                       placeholder="••••••••"
-                      value={password}
-                      onChange={(e) => setPassword(e.target.value)}
+                      value={confirmPassword}
+                      onChange={(e) => setConfirmPassword(e.target.value)}
                     />
-                   
                   </div>
                 </div>
-           
               </div>
 
               <button
